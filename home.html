@@ -1,0 +1,1160 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Udaaan Connect - Empowering Micropreneurs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Suppress Tailwind CDN warning for cleaner console
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('cdn.tailwindcss.com should not be used in production')) { return; }
+            originalWarn.apply(console, args);
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #1e40af; /* Blue-700 */
+            --primary-light: #3b82f6; /* Blue-500 */
+            --secondary: #9333ea; /* Violet-600 for contrast/accents */
+            --accent: #059669; /* Emerald */
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray-800: #1f2937;
+        }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; }
+        .dark-mode { background-color: var(--gray-800); color: var(--white); }
+        .dark-mode .header { background-color: var(--gray-800); border-bottom-color: #374151; }
+        .dark-mode .nav-link:hover { color: var(--primary-light); background-color: #374151; }
+        .dark-mode .feature-card, .dark-mode .pathway-card, .dark-mode .resource-item, .dark-mode .hub-card {
+            background-color: #374151; /* Gray-700 */
+            border-color: #4b5563; /* Gray-600 */
+            color: var(--white);
+        }
+        .dark-mode .feature-card h3, .dark-mode .pathway-card h4, .dark-mode .resource-item h4 { color: var(--primary-light); }
+        .dark-mode .digital-hub-response { background-color: #374151; color: var(--white); border-color: #4b5563; }
+        .dark-mode .hero { background: linear-gradient(135deg, #1d4ed8, #4f46e5); }
+        .header { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+
+        .btn-primary {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.4);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(30, 64, 175, 0.6); }
+
+        /* Loader and AI Response Styling */
+        .loader {
+            border: 4px solid #d1d5db; /* Gray-300 */
+            border-top: 4px solid var(--secondary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .digital-hub-response p {
+            margin-bottom: 1rem;
+        }
+        .source-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 1.5rem;
+            border-top: 1px dashed #d1d5db;
+            padding-top: 1rem;
+        }
+        .dark-mode .source-list {
+            border-top-color: #4b5563;
+        }
+        .source-list li {
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        .source-list a {
+            color: #1e40af;
+            text-decoration: none;
+            word-break: break-all;
+            transition: color 0.2s ease;
+        }
+        .source-list a:hover {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        .dark-mode .source-list a {
+            color: #93c5fd;
+        }
+        /* Active Link Styling */
+        .nav-link.active {
+            color: #1d4ed8;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-radius: 0.5rem;
+        }
+        .dark-mode .nav-link.active {
+            color: #60a5fa;
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+        .hamburger-line {
+            width: 100%;
+            height: 2px;
+            background: currentColor;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+            position: relative;
+        }
+        .hamburger.active .hamburger-line:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active .hamburger-line:nth-child(2) { opacity: 0; transform: scale(0); }
+        .hamburger.active .hamburger-line:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+        .hamburger { width: 20px; height: 16px; position: relative; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
+
+        /* Mobile Sidebar Functional Classes - CRITICAL FIX */
+        .mobile-sidebar-open {
+            transform: translateX(0) !important;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+        .mobile-sidebar-overlay-active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white transition-colors duration-300">
+    <!-- Header -->
+    <header class="header fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-600/50">
+        <nav class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center gap-3 group">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-violet-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-all duration-300">
+                            <i class="fas fa-hand-holding-heart text-white text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-bold bg-gradient-to-r from-blue-700 to-violet-600 bg-clip-text text-transparent">
+                            Udaaan Connect
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <ul class="flex items-center space-x-4">
+                        <li><a href="#home" class="nav-link relative px-4 py-2 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300" data-en="Home" data-hi="होम" data-pa="ਘਰ" data-te="హోమ్">
+                            <span class="relative z-10">Home</span>
+                        </a></li>
+                        <li><a href="#udaan-shiksha" class="nav-link relative px-4 py-2 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300" data-en="Udaaan Shiksha (Learn)" data-hi="उड़ान शिक्षा (सीखें)" data-pa="ਉਡਾਨ ਸਿੱਖਿਆ (ਸਿੱਖੋ)" data-te="ఉడాన్ శిక్ష (నేర్చుకోండి)">
+                            <span class="relative z-10">Udaaan Shiksha (Learn)</span>
+                        </a></li>
+                        <li><a href="#udaan-vyapar" class="nav-link relative px-4 py-2 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300" data-en="Udaaan Vyapar (Sell)" data-hi="उड़ान व्यापार (बेचें)" data-pa="ਉਡਾਨ ਵਪਾਰ (ਵੇਚੋ)" data-te="ఉడాన్ వ్యాపార (అమ్మండి)">
+                            <span class="relative z-10">Udaaan Vyapar (Sell)</span>
+                        </a></li>
+                        <li><a href="#digital-hub" class="nav-link relative px-4 py-2 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300" data-en="Digital Help" data-hi="डिजिटल सहायता" data-pa="ਡਿਜੀਟਲ ਮਦਦ" data-te="డిజిటల్ సహాయం">
+                            <span class="relative z-10">Digital Help</span>
+                        </a></li>
+                        <li><a href="#contact" class="nav-link relative px-4 py-2 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300" data-en="Contact" data-hi="संपर्क" data-pa="ਸੰਪਰਕ" data-te="సంప్రదింపు">
+                            <span class="relative z-10">Contact</span>
+                        </a></li>
+                    </ul>
+                </div>
+
+                <!-- Desktop Controls -->
+                <div class="hidden lg:flex items-center space-x-4">
+                    <select id="language-selector" class="px-4 py-2 bg-gray-100/80 dark:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/50 rounded-xl text-gray-700 dark:text-gray-300 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="pa">ਪੰਜਾਬੀ</option>
+                        <option value="te">తెలుగు</option>
+                    </select>
+                    <button id="theme-toggle" class="p-2.5 bg-gray-100/80 dark:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/50 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-200/80 dark:hover:bg-gray-600/80 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 group">
+                        <i class="fas fa-sun text-lg group-hover:rotate-180 transition-transform duration-300"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Controls -->
+                <div class="flex lg:hidden items-center space-x-3">
+                    <select id="language-selector-mobile" class="px-3 py-2 bg-gray-100/80 dark:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/50 rounded-lg text-gray-700 dark:text-gray-300 text-sm">
+                        <option value="en">EN</option>
+                        <option value="hi">HI</option>
+                        <option value="pa">PA</option>
+                        <option value="te">TE</option>
+                    </select>
+                    <button id="theme-toggle-mobile" class="p-2 bg-gray-100/80 dark:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/50 rounded-lg text-gray-700 dark:text-gray-300">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <!-- Hamburger Menu Toggle -->
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 bg-gray-100/80 dark:bg-gray-700/80 border border-gray-300/50 dark:border-gray-600/50 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200/80 dark:hover:bg-gray-600/80 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div class="hamburger">
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Sidebar -->
+        <div id="mobile-sidebar" class="fixed inset-y-0 left-0 z-50 w-80 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden border-r border-gray-200 dark:border-gray-600 shadow-2xl">
+            <div class="flex flex-col h-full">
+                <!-- Sidebar Header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-gray-600/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-hand-holding-heart text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold bg-gradient-to-r from-blue-700 to-violet-600 bg-clip-text text-transparent">
+                            Udaaan
+                        </span>
+                    </div>
+                    <button id="mobile-sidebar-close" class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <!-- Sidebar Navigation -->
+                <div class="flex-1 overflow-y-auto py-6">
+                    <ul class="space-y-2 px-6">
+                        <li><a href="#home" class="mobile-nav-link flex items-center gap-4 px-4 py-3 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-all duration-300" data-en="Home" data-hi="होम" data-pa="ਘਰ" data-te="హోమ్">
+                            <i class="fas fa-home text-lg w-5"></i>
+                            <span>Home</span>
+                        </a></li>
+                        <li><a href="#udaan-shiksha" class="mobile-nav-link flex items-center gap-4 px-4 py-3 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-all duration-300" data-en="Udaaan Shiksha (Learn)" data-hi="उड़ान शिक्षा (सीखें)" data-pa="ਉਡਾਨ ਸਿੱਖਿਆ (ਸਿੱਖੋ)" data-te="ఉడాన్ శిక్ష (నేర్చుకోండి)">
+                            <i class="fas fa-graduation-cap text-lg w-5"></i>
+                            <span>Udaaan Shiksha (Learn)</span>
+                        </a></li>
+                        <li><a href="#udaan-vyapar" class="mobile-nav-link flex items-center gap-4 px-4 py-3 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-all duration-300" data-en="Udaaan Vyapar (Sell)" data-hi="उड़ान व्यापार (बेचें)" data-pa="ਉਡਾਨ ਵਪਾਰ (ਵੇਚੋ)" data-te="ఉడాన్ వ్యాపార (అమ్మండి)">
+                            <i class="fas fa-globe text-lg w-5"></i>
+                            <span>Udaaan Vyapar (Sell)</span>
+                        </a></li>
+                        <li><a href="#digital-hub" class="mobile-nav-link flex items-center gap-4 px-4 py-3 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-all duration-300" data-en="Digital Help" data-hi="डिजिटल सहायता" data-pa="ਡਿਜੀਟਲ ਮਦਦ" data-te="డిజిటల్ సహాయం">
+                            <i class="fas fa-laptop text-lg w-5"></i>
+                            <span>Digital Help</span>
+                        </a></li>
+                        <li><a href="#contact" class="mobile-nav-link flex items-center gap-4 px-4 py-3 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-all duration-300" data-en="Contact" data-hi="संपर्क" data-pa="ਸੰਪਰਕ" data-te="సంప్రదింపు">
+                            <i class="fas fa-phone text-lg w-5"></i>
+                            <span>Contact</span>
+                        </a></li>
+                    </ul>
+                </div>
+                <!-- Sidebar Footer -->
+                <div class="p-6 border-t border-gray-200/50 dark:border-gray-600/50">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center" data-en="Learn to Lead, Connect to Conquer." data-hi="नेतृत्व करना सीखें, जीतने के लिए जुड़ें।">Learn to Lead, Connect to Conquer.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Sidebar Overlay -->
+        <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-all duration-300 lg:hidden"></div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content pt-20">
+        <!-- Hero Section -->
+        <section id="home" class="hero bg-gradient-to-br from-blue-700 to-violet-600 text-white text-center py-20 px-4 md:py-32">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight" data-en="Udaaan: Learn to Lead, Connect to Conquer" data-hi="उड़ान: नेतृत्व करना सीखें, जीतने के लिए जुड़ें" data-pa="ਉਡਾਨ: ਅਗਵਾਈ ਕਰਨਾ ਸਿੱਖੋ, ਜਿੱਤਣ ਲਈ ਜੁੜੋ" data-te="ఉడాన్: నాయకత్వం నేర్చుకోండి, జయించడానికి కనెక్ట్ అవ్వండి">Udaaan: Learn to Lead, Connect to Conquer</h1>
+                <p class="text-base sm:text-lg md:text-xl mb-8 opacity-90" data-en="A dual-pathway platform offering world-class training (Shiksha) and direct access to global markets (Vyapar) for micropreneurs." data-hi="माइक्रो-उद्यमियों के लिए विश्व स्तरीय प्रशिक्षण (शिक्षा) और वैश्विक बाजारों (व्यापार) तक सीधी पहुंच प्रदान करने वाला एक दोहरा-मार्ग मंच।" data-pa="ਮਾਈਕ੍ਰੋ-ਉਦਮੀਆਂ ਲਈ ਵਿਸ਼ਵ ਪੱਧਰੀ ਸਿਖਲਾਈ (ਸਿੱਖਿਆ) ਅਤੇ ਗਲੋਬਲ ਬਾਜ਼ਾਰਾਂ (ਵਪਾਰ) ਤੱਕ ਸਿੱਧੀ ਪਹੁੰਚ ਪ੍ਰਦਾਨ ਕਰਨ ਵਾਲਾ ਇੱਕ ਦੋਹਰਾ-ਮਾਰਗ ਪਲੇਟਫਾਰਮ।">A dual-pathway platform offering world-class training (**Shiksha**) and direct access to global markets (**Vyapar**) for micropreneurs.</p>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <a href="#udaan-shiksha" class="btn-primary bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-300 shadow-md flex items-center space-x-2">
+                        <i class="fas fa-book-open"></i>
+                        <span data-en="Start Learning (Shiksha)" data-hi="सीखना शुरू करें (शिक्षा)" data-pa="ਸਿੱਖਣਾ ਸ਼ੁਰੂ ਕਰੋ (ਸਿੱਖਿਆ)" data-te="నేర్చుకోవడం ప్రారంభించండి (శిక్ష)">Start Learning (Shiksha)</span>
+                    </a>
+                    <a href="products.html" class="btn-primary bg-violet-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-violet-600 transition-all duration-300 shadow-md flex items-center space-x-2">
+                        <i class="fas fa-handshake"></i>
+                        <span data-en="Connect to Market (Vyapar)" data-hi="बाजार से जुड़ें (व्यापार)" data-pa="ਬਾਜ਼ਾਰ ਨਾਲ ਜੁੜੋ (ਵਪਾਰ)" data-te="మార్కెట్‌కు కనెక్ట్ చేయండి (వ్యాపార)">Connect to Market (Vyapar)</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Udaaan Shiksha: Learning Pathways -->
+        <section id="udaan-shiksha" class="section py-16 md:py-24 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-center text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-white" data-en="Udaaan Shiksha: Learning & Empowerment" data-hi="उड़ान शिक्षा: सीखना और सशक्तिकरण" data-pa="ਉਡਾਨ ਸਿੱਖਿਆ: ਸਿੱਖਣਾ ਅਤੇ ਸਸ਼ਕਤੀਕਰਨ" data-te="ఉడాన్ శిక్ష: నేర్చుకోవడం & సాధికారత">Udaaan Shiksha: Learning & Empowerment</h2>
+                <p class="text-center text-lg text-gray-600 dark:text-gray-300 mb-12" data-en="Two pathways to elevate your business: foundational knowledge for local success and high-value skills for global growth." data-hi="आपके व्यवसाय को आगे बढ़ाने के लिए दो मार्ग: स्थानीय सफलता के लिए मूलभूत ज्ञान और वैश्विक विकास के लिए उच्च-मूल्य कौशल।" data-pa="ਤੁਹਾਡੇ ਕਾਰੋਬਾਰ ਨੂੰ ਉੱਚਾ ਚੁੱਕਣ ਲਈ ਦੋ ਰਸਤੇ: ਸਥਾਨਕ ਸਫਲਤਾ ਲਈ ਬੁਨਿਆਦੀ ਗਿਆਨ ਅਤੇ ਗਲੋਬਲ ਵਿਕਾਸ ਲਈ ਉੱਚ-ਮੁੱਲ ਦੇ ਹੁਨਰ।">Two pathways to elevate your business: foundational knowledge for local success and high-value skills for global growth.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                    <!-- Pathway 1: Regional & Foundational Modules -->
+                    <div class="pathway-card bg-white dark:bg-gray-700 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <i class="fas fa-map-marked-alt text-3xl text-blue-600 dark:text-blue-400"></i>
+                            <h4 class="text-2xl font-bold text-gray-800 dark:text-white" data-en="Foundation Modules (Regional Focus)" data-hi="बुनियादी मॉड्यूल (क्षेत्रीय फोकस)" data-pa="ਬੁਨਿਆਦੀ ਮੋਡਿਊਲ (ਖੇਤਰੀ ਫੋਕਸ)" data-te="ఫౌండేషన్ మాడ్యూల్స్ (ప్రాంతీయ దృష్టి)">Foundation Modules (Regional Focus)</h4>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6" data-en="Essential training tailored for rural micropreneurs, focusing on local markets, compliance, and basic digital usage." data-hi="ग्रामीण माइक्रो-उद्यमियों के लिए तैयार आवश्यक प्रशिक्षण, स्थानीय बाजारों, अनुपालन और बुनियादी डिजिटल उपयोग पर ध्यान केंद्रित करना।">Essential training tailored for rural micropreneurs, focusing on local markets, compliance, and basic digital usage.</p>
+                        <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                            <li class="flex items-start">
+                                <i class="fas fa-mobile-alt text-lg text-green-500 mr-3 mt-1"></i>
+                                <div>
+                                    <span class="font-semibold" data-en="Digital Literacy Basics" data-hi="डिजिटल साक्षरता की मूल बातें" data-pa="ਡਿਜੀਟਲ ਸਾਖਰਤਾ ਦੀਆਂ ਮੂਲ ਗੱਲਾਂ" data-te="డిజిటల్ అక్షరాస్యత ప్రాథమికాలు">Digital Literacy Basics:</span>
+                                    <span data-en="Using WhatsApp Business, online payments, and basic social media promotion." data-hi="व्हाट्सएप बिजनेस, ऑनलाइन भुगतान, और बुनियादी सोशल मीडिया प्रचार का उपयोग।">Using WhatsApp Business, online payments, and basic social media promotion.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-calculator text-lg text-green-500 mr-3 mt-1"></i>
+                                <div>
+                                    <span class="font-semibold" data-en="Basic Accounting & Finance" data-hi="बुनियादी लेखांकन और वित्त" data-pa="ਬੁਨਿਆਦੀ ਲੇਖਾਕਾਰੀ ਅਤੇ ਵਿੱਤ" data-te="ప్రాథమిక అకౌంటింగ్ & ఫైనాన్స్">Basic Accounting & Finance:</span>
+                                    <span data-en="Record keeping, calculating profits, and managing small expenses." data-hi="रिकॉर्ड रखना, मुनाफे की गणना करना, और छोटे खर्चों का प्रबंधन करना।">Record keeping, calculating profits, and managing small expenses.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-hand-holding-usd text-lg text-green-500 mr-3 mt-1"></i>
+                                <div>
+                                    <span class="font-semibold" data-en="Local Scheme Awareness" data-hi="स्थानीय योजना जागरूकता" data-pa="ਸਥਾਨਕ ਸਕੀਮਾਂ ਦੀ ਜਾਗਰੂਕਤਾ" data-te="స్థానిక పథకాల అవగాహన">Local Scheme Awareness:</span>
+                                    <span data-en="How to access state-level microfinance and self-help group (SHG) funding." data-hi="राज्य-स्तरीय माइक्रोफाइनेंस और स्वयं सहायता समूह (SHG) फंडिंग तक कैसे पहुंचें।">How to access state-level microfinance and self-help group (SHG) funding.</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <button onclick="openProgramModal('foundation-modules')" class="mt-8 w-full btn-primary bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                            <span data-en="Enroll in Foundation" data-hi="बुनियादी में नामांकन करें" data-pa="ਬੁਨਿਆਦੀ ਵਿੱਚ ਦਾਖਲਾ ਲਓ" data-te="ఫౌండేషన్‌లో నమోదు చేయండి">Enroll in Foundation</span>
+                        </button>
+                    </div>
+
+                    <!-- Pathway 2: High-Value & Global Modules -->
+                    <div class="pathway-card bg-white dark:bg-gray-700 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <i class="fas fa-star text-3xl text-violet-600 dark:text-violet-400"></i>
+                            <h4 class="text-2xl font-bold text-gray-800 dark:text-white" data-en="High-Value Modules (Global Focus)" data-hi="उच्च-मूल्य मॉड्यूल (वैश्विक फोकस)" data-pa="ਉੱਚ-ਮੁੱਲ ਮੋਡਿਊਲ (ਗਲੋਬਲ ਫੋਕਸ)" data-te="ఉన్నత-విలువ మాడ్యూల్స్ (ప్రపంచ దృష్టి)">High-Value Modules (Global Focus)</h4>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6" data-en="Advanced modules to scale your business, focusing on international standards, intellectual property, and establishing a powerful brand identity." data-hi="आपके व्यवसाय को बढ़ाने के लिए उन्नत मॉड्यूल, अंतर्राष्ट्रीय मानकों, बौद्धिक संपदा और एक शक्तिशाली ब्रांड पहचान स्थापित करने पर ध्यान केंद्रित करना।">Advanced modules to scale your business, focusing on international standards, intellectual property, and establishing a powerful brand identity.</p>
+                        <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                            <li class="flex items-start">
+                                <i class="fas fa-lightbulb text-lg text-orange-500 mr-3 mt-1"></i>
+                                <div>
+                                    <span class="font-semibold" data-en="Crafting Your USP" data-hi="अपनी यूएसपी (USP) तैयार करना" data-pa="ਆਪਣੀ USP ਤਿਆਰ ਕਰਨਾ" data-te="మీ USPని రూపొందించడం">Crafting Your USP (Unique Selling Proposition):</span>
+                                    <span data-en="Define what makes your product unique and marketable globally." data-hi="परिभाषित करें कि आपके उत्पाद को विश्व स्तर पर अद्वितीय और विपणन योग्य क्या बनाता है।">Define what makes your product unique and marketable globally.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-award text-lg text-orange-500 mr-3 mt-1"></i>
+                                <div>
+                                    <span class="font-semibold" data-en="Global Quality & Branding" data-hi="वैश्विक गुणवत्ता और ब्रांडिंग" data-pa="ਗਲੋਬਲ ਕੁਆਲਿਟੀ ਅਤੇ ਬ੍ਰਾਂਡਿੰਗ" data-te="ప్రపంచ నాణ్యత & బ్రాండింగ్">Global Quality & Branding:</span>
+                                    <span data-en="Understanding international quality certifications and building a trustworthy brand narrative." data-hi="अंतर्राष्ट्रीय गुणवत्ता प्रमाणन को समझना और एक भरोसेमंद ब्रांड कथा का निर्माण करना।">Understanding international quality certifications and building a trustworthy brand narrative.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-file-export text-lg text-orange-500 mr-3 mt-1"></i>
+                                <div>
+                                    <span class="font-semibold" data-en="Export Documentation Essentials" data-hi="निर्यात दस्तावेज़ीकरण अनिवार्य" data-pa="ਨਿਰਯਾਤ ਦਸਤਾਵੇਜ਼ੀਕਰਨ ਜ਼ਰੂਰੀ" data-te="ఎగుమతి డాక్యుమెంటేషన్ అవసరాలు">Export Documentation Essentials:</span>
+                                    <span data-en="Mastering IEC code, custom procedures, and shipping paperwork." data-hi="IEC कोड, कस्टम प्रक्रियाओं और शिपिंग कागजी कार्रवाई में महारत हासिल करना।">Mastering IEC code, custom procedures, and shipping paperwork.</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <button onclick="openProgramModal('high-value-modules')" class="mt-8 w-full btn-primary bg-violet-600 text-white py-3 rounded-lg font-semibold hover:bg-violet-700 transition-colors">
+                            <span data-en="Apply for High-Value" data-hi="उच्च-मूल्य के लिए आवेदन करें" data-pa="ਉੱਚ-ਮੁੱਲ ਲਈ ਅਰਜ਼ੀ ਦਿਓ" data-te="ఉన్నత-విలువ కోసం దరఖాస్తు చేయండి">Apply for High-Value</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Udaaan Vyapar: Global Market Connect -->
+        <section id="udaan-vyapar" class="section py-16 md:py-24 bg-white dark:bg-gray-700 transition-colors duration-300">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-center text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-white" data-en="Udaaan Vyapar: Global Market Connect" data-hi="उड़ान व्यापार: वैश्विक बाजार से जुड़ना" data-pa="ਉਡਾਨ ਵਪਾਰ: ਗਲੋਬਲ ਮਾਰਕੀਟ ਕਨੈਕਟ" data-te="ఉడాన్ వ్యాపార: గ్లోబల్ మార్కెట్ కనెక్ట్">Udaaan Vyapar: Global Market Connect</h2>
+                <p class="text-center text-lg text-gray-600 dark:text-gray-300 mb-12" data-en="Connect your micropreneur-led business directly to global industrial buyers and international e-commerce platforms." data-hi="अपने माइक्रो-उद्यमी-नेतृत्व वाले व्यवसाय को सीधे वैश्विक औद्योगिक खरीदारों और अंतर्राष्ट्रीय ई-कॉमर्स प्लेटफॉर्म से जोड़ें।" data-pa="ਆਪਣੇ ਮਾਈਕ੍ਰੋ-ਉਦਮੀ-ਨਿਰਦੇਸ਼ਿਤ ਕਾਰੋਬਾਰ ਨੂੰ ਸਿੱਧੇ ਤੌਰ 'ਤੇ ਗਲੋਬਲ ਉਦਯੋਗਿਕ ਖਰੀਦਦਾਰਾਂ ਅਤੇ ਅੰਤਰਰਾਸ਼ਟਰੀ ਈ-ਕਾਮਰਸ ਪਲੇਟਫਾਰਮਾਂ ਨਾਲ ਜੋੜੋ।">Connect your micropreneur-led business directly to global industrial buyers and international e-commerce platforms.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                    <!-- Feature 1: Industry Matching -->
+                    <div class="feature-card bg-gray-50 dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-blue-200 dark:border-blue-600/50">
+                        <div class="feature-icon bg-blue-600 text-white w-16 h-16 rounded-xl flex items-center justify-center text-2xl mb-6">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-white" data-en="Global Industry Matching (B2B)" data-hi="वैश्विक उद्योग मिलान (B2B)" data-pa="ਗਲੋਬਲ ਉਦਯੋਗ ਮੈਚਿੰਗ (B2B)" data-te="గ్లోబల్ ఇండస్ట్రీ మ్యాచింగ్ (B2B)">Global Industry Matching (B2B)</h3>
+                        <p class="text-gray-600 dark:text-gray-300" data-en="Direct connection service to large international companies looking for unique, sustainable products from India." data-hi="भारत से अद्वितीय, टिकाऊ उत्पादों की तलाश कर रही बड़ी अंतर्राष्ट्रीय कंपनियों के लिए सीधी कनेक्शन सेवा।">Direct connection service to large international companies looking for unique, sustainable products from India.</p>
+                        <button onclick="openProgramModal('industry-matching')" class="mt-4 text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                            <span data-en="Explore Buyers" data-hi="खरीदारों का अन्वेषण करें" data-pa="ਖਰੀਦਦਾਰਾਂ ਦੀ ਖੋਜ ਕਰੋ" data-te="కొనుగోలుదారులను అన్వేషించండి">Explore Buyers</span>
+                        </button>
+                    </div>
+
+                    <!-- Feature 2: Export Logistics & Compliance -->
+                    <div class="feature-card bg-gray-50 dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-violet-200 dark:border-violet-600/50">
+                        <div class="feature-icon bg-violet-600 text-white w-16 h-16 rounded-xl flex items-center justify-center text-2xl mb-6">
+                            <i class="fas fa-truck-loading"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-white" data-en="Export Logistics Support" data-hi="निर्यात रसद सहायता" data-pa="ਨਿਰਯਾਤ ਲੌਜਿਸਟਿਕਸ ਸਹਾਇਤਾ" data-te="ఎగుమతి లాజిస్టిక్స్ మద్దతు">Export Logistics Support</h3>
+                        <p class="text-gray-600 dark:text-gray-300" data-en="Guided assistance with packaging standards, customs clearance, shipping arrangements, and international trade compliance." data-hi="पैकेजिंग मानकों, सीमा शुल्क निकासी, शिपिंग व्यवस्था और अंतर्राष्ट्रीय व्यापार अनुपालन के साथ निर्देशित सहायता।">Guided assistance with packaging standards, customs clearance, shipping arrangements, and international trade compliance.</p>
+                        <button onclick="openProgramModal('export-logistics')" class="mt-4 text-violet-600 dark:text-violet-400 font-medium hover:underline">
+                            <span data-en="View Guide" data-hi="गाइड देखें" data-pa="ਗਾਈਡ ਦੇਖੋ" data-te="గైడ్ చూడండి">View Guide</span>
+                        </button>
+                    </div>
+
+                    <!-- Feature 3: Digital Commerce Exposure (B2C) -->
+                    <div class="feature-card bg-gray-50 dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-green-200 dark:border-green-600/50">
+                        <div class="feature-icon bg-green-600 text-white w-16 h-16 rounded-xl flex items-center justify-center text-2xl mb-6">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-white" data-en="Digital Commerce Exposure (B2C)" data-hi="डिजिटल वाणिज्य एक्सपोजर (B2C)" data-pa="ਡਿਜੀਟਲ ਕਾਮਰਸ ਐਕਸਪੋਜ਼ਰ (B2C)" data-te="డిజిటల్ కామర్స్ ఎక్స్‌పోజర్ (B2C)">Digital Commerce Exposure (B2C)</h3>
+                        <p class="text-gray-600 dark:text-gray-300" data-en="Platform integration with international e-commerce sites (Etsy, Amazon Global) and training on cross-border sales." data-hi="अंतर्राष्ट्रीय ई-कॉमर्स साइटों (Etsy, Amazon Global) के साथ प्लेटफ़ॉर्म एकीकरण और प्रशिक्षण पर सीमा-पार बिक्री।" data-pa="ਅੰਤਰਰਾਸ਼ਟਰੀ ਈ-ਕਾਮਰਸ ਸਾਈਟਾਂ (Etsy, Amazon Global) ਦੇ ਨਾਲ ਪਲੇਟਫਾਰਮ ਏਕੀਕਰਣ ਅਤੇ ਸਿਖਲਾਈ 'ਤੇ ਕ੍ਰਾਸ-ਬਾਰਡਰ ਵਿਕਰੀ।">Platform integration with international e-commerce sites (Etsy, Amazon Global) and training on cross-border sales.</p>
+                        <button onclick="openProgramModal('digital-commerce')" class="mt-4 text-green-600 dark:text-green-400 font-medium hover:underline">
+                            <span data-en="Start Selling Online" data-hi="ऑनलाइन बेचना शुरू करें" data-pa="ਆਨਲਾਈਨ ਵੇਚਣਾ ਸ਼ੁਰੂ ਕਰੋ" data-te="ఆన్‌లైన్‌లో అమ్మడం ప్రారంభించండి">Start Selling Online</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Cottage Industry Showcase Section -->
+                <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-600">
+                    <h3 class="text-center text-2xl md:text-3xl font-bold mb-8 text-gray-800 dark:text-white" data-en="Cottage Industry Showcase" data-hi="कुटीर उद्योग प्रदर्शन" data-pa="ਕੁਟੀਰ ਉਦਯੋਗ ਸ਼ੋਕੇਸ" data-te="కుటీర పరిశ్రమ షోకేస్">Cottage Industry Showcase</h3>
+                    <p class="text-center text-gray-600 dark:text-gray-300 mb-10 max-w-3xl mx-auto" data-en="Discover the backbone of India's rural economy. Micropreneurs can list their products here, while global buyers can source authentic, high-quality goods directly." data-hi="भारत की ग्रामीण अर्थव्यवस्था की रीढ़ की खोज करें। माइक्रो-उद्यमी अपने उत्पादों को यहां सूचीबद्ध कर सकते हैं, जबकि वैश्विक खरीदार सीधे प्रामाणिक, उच्च गुणवत्ता वाले सामान प्राप्त कर सकते हैं।">Discover the backbone of India's rural economy. Micropreneurs can list their products here, while global buyers can source authentic, high-quality goods directly.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Category 1: Heritage Textiles -->
+                        <div class="feature-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-600 flex flex-col h-full">
+                            <div class="w-full h-40 bg-pink-100 dark:bg-pink-900/30 rounded-lg mb-4 flex items-center justify-center text-pink-600 dark:text-pink-400">
+                                <i class="fas fa-tshirt text-4xl"></i>
+                            </div>
+                            <h4 class="text-lg font-bold mb-2 text-gray-800 dark:text-white" data-en="Heritage Textiles" data-hi="विरासत वस्त्र" data-pa="ਵਿਰਾਸਤੀ ਟੈਕਸਟਾਈਲ">Heritage Textiles</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow italic">"Reviving the lost art of Phulkari, empowered women in Punjab are weaving stories of tradition into every thread."</p>
+                            <div class="flex gap-2 mt-auto">
+                                <button onclick="openProductShowcase('textiles')" class="flex-1 py-2 px-3 bg-pink-600 text-white text-xs font-bold rounded hover:bg-pink-700 transition-colors" data-en="Sell This" data-hi="इसे बेचें">Sell This</button>
+                                <button onclick="openProductShowcase('textiles')" class="flex-1 py-2 px-3 border border-pink-600 text-pink-600 dark:text-pink-400 text-xs font-bold rounded hover:bg-pink-50 dark:hover:bg-gray-700 transition-colors" data-en="Buy Bulk" data-hi="थोक खरीदें">Buy Bulk</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Category 2: Organic Preserves -->
+                        <div class="feature-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-600 flex flex-col h-full">
+                            <div class="w-full h-40 bg-orange-100 dark:bg-orange-900/30 rounded-lg mb-4 flex items-center justify-center text-orange-600 dark:text-orange-400">
+                                <i class="fas fa-leaf text-4xl"></i>
+                            </div>
+                            <h4 class="text-lg font-bold mb-2 text-gray-800 dark:text-white" data-en="Organic Preserves" data-hi="जैविक परिरक्षित खाद्य" data-pa="ਜੈਵਿਕ ਸੁਰੱਖਿਅਤ ਭੋਜਨ">Organic Preserves</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow italic">"From the orchards of Himachal, sun-dried pickles and jams made with recipes passed down through generations."</p>
+                            <div class="flex gap-2 mt-auto">
+                                <button onclick="openProductShowcase('organics')" class="flex-1 py-2 px-3 bg-orange-600 text-white text-xs font-bold rounded hover:bg-orange-700 transition-colors" data-en="Sell This" data-hi="इसे बेचें">Sell This</button>
+                                <button onclick="openProductShowcase('organics')" class="flex-1 py-2 px-3 border border-orange-600 text-orange-600 dark:text-orange-400 text-xs font-bold rounded hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors" data-en="Buy Bulk" data-hi="थोक खरीदें">Buy Bulk</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Category 3: Sustainable Bamboo -->
+                        <div class="feature-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-600 flex flex-col h-full">
+                            <div class="w-full h-40 bg-green-100 dark:bg-green-900/30 rounded-lg mb-4 flex items-center justify-center text-green-600 dark:text-green-400">
+                                <i class="fas fa-tree text-4xl"></i>
+                            </div>
+                            <h4 class="text-lg font-bold mb-2 text-gray-800 dark:text-white" data-en="Eco-friendly Bamboo" data-hi="पर्यावरण के अनुकूल बांस" data-pa="ਈਕੋ-ਫਰੈਂਡਲੀ ਬਾਂਸ">Eco-friendly Bamboo</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow italic">"Crafted in the North East, these sustainable home utilities and furniture are replacing plastic globally."</p>
+                            <div class="flex gap-2 mt-auto">
+                                <button onclick="openProductShowcase('bamboo')" class="flex-1 py-2 px-3 bg-green-600 text-white text-xs font-bold rounded hover:bg-green-700 transition-colors" data-en="Sell This" data-hi="इसे बेचें">Sell This</button>
+                                <button onclick="openProductShowcase('bamboo')" class="flex-1 py-2 px-3 border border-green-600 text-green-600 dark:text-green-400 text-xs font-bold rounded hover:bg-green-50 dark:hover:bg-gray-700 transition-colors" data-en="Buy Bulk" data-hi="थोक खरीदें">Buy Bulk</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Category 4: Terracotta Art -->
+                        <div class="feature-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-600 flex flex-col h-full">
+                            <div class="w-full h-40 bg-amber-100 dark:bg-amber-900/30 rounded-lg mb-4 flex items-center justify-center text-amber-700 dark:text-amber-500">
+                                <i class="fas fa-layer-group text-4xl"></i>
+                            </div>
+                            <h4 class="text-lg font-bold mb-2 text-gray-800 dark:text-white" data-en="Terracotta Art" data-hi="टेराकोटा कला" data-pa="ਟੈਰਾਕੋਟਾ ਕਲਾ">Terracotta Art</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow italic">"West Bengal's master clay artisans molding raw earth into timeless, intricate decor pieces for modern homes."</p>
+                            <div class="flex gap-2 mt-auto">
+                                <button onclick="openProductShowcase('terracotta')" class="flex-1 py-2 px-3 bg-amber-700 text-white text-xs font-bold rounded hover:bg-amber-800 transition-colors" data-en="Sell This" data-hi="इसे बेचें">Sell This</button>
+                                <button onclick="openProductShowcase('terracotta')" class="flex-1 py-2 px-3 border border-amber-700 text-amber-700 dark:text-amber-500 text-xs font-bold rounded hover:bg-amber-50 dark:hover:bg-gray-700 transition-colors" data-en="Buy Bulk" data-hi="थोक खरीदें">Buy Bulk</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+
+
+        <!-- Digital Skills Hub (AI Mentor) -->
+        <section id="digital-hub" class="section digital-hub py-16 md:py-24 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+            <div class="max-w-4xl mx-auto px-4">
+                <h2 class="text-center text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-white" data-en="AI Digital Mentor Hub" data-hi="एआई डिजिटल मेंटर हब" data-pa="ਏਆਈ ਡਿਜੀਟਲ ਮੈਂਟਰ ਹੱਬ" data-te="AI డిజిటల్ మెంటర్ హబ్">AI Digital Mentor Hub</h2>
+                <p class="text-center text-gray-600 dark:text-gray-300 mb-8" data-en="Ask any question about digital tools, business promotion, or market access. Our AI-powered assistant provides simple, grounded, step-by-step guidance in your language." data-hi="डिजिटल उपकरणों, व्यापार प्रचार, या बाजार पहुंच के बारे में कोई भी प्रश्न पूछें। हमारा एआई-संचालित सहायक आपकी भाषा में सरल, ज़मीनी, चरण-दर-चरण मार्गदर्शन प्रदान करता है।" data-pa="ਡਿਜੀਟਲ ਸਾਧਨਾਂ, ਵਪਾਰ ਪ੍ਰਮੋਸ਼ਨ, ਜਾਂ ਬਾਜ਼ਾਰ ਪਹੁੰਚ ਬਾਰੇ ਕੋਈ ਵੀ ਸਵਾਲ ਪੁੱਛੋ। ਸਾਡਾ ਏਆਈ-ਸੰਚਾਲਿਤ ਸਹਾਇਕ ਤੁਹਾਡੀ ਭਾਸ਼ਾ ਵਿੱਚ ਸਧਾਰਨ, ਜ਼ਮੀਨੀ, ਕਦਮ-ਦਰ-ਕਦਮ ਮਾਰਗਦਰਸ਼ਨ ਪ੍ਰਦਾਨ ਕਰਦਾ ਹੈ।">Ask any question about digital tools, business promotion, or market access. Our AI-powered assistant provides simple, grounded, step-by-step guidance in your language.</p>
+                <div class="p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hub-card">
+                    <form id="digital-query-form" class="digital-hub-form">
+                        <textarea id="digital-query-input" class="w-full h-32 p-4 rounded-lg bg-gray-100 dark:bg-gray-600 border border-gray-300 dark:border-gray-500 resize-none text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500" data-en-placeholder="e.g., How do I set up a business account on Instagram?" data-hi-placeholder="उदाहरण के लिए, मैं इंस्टाग्राम पर एक व्यावसायिक खाता कैसे स्थापित करूं?" data-pa-placeholder="ਉਦਾਹਰਨ ਲਈ, ਮੈਂ Instagram 'ਤੇ ਇੱਕ ਕਾਰੋਬਾਰੀ ਖਾਤਾ ਕਿਵੇਂ ਸਥਾਪਿਤ ਕਰਾਂ?" data-te-placeholder="ఉదాహరణకు, నేను ఇన్‌స్టాగ్రామ్‌లో వ్యాపార ఖాతాను ఎలా ఏర్పాటు చేయాలి?" placeholder="e.g., How do I set up a business account on Instagram?"></textarea>
+                        <button type="submit" class="btn-primary bg-gradient-to-r from-blue-600 to-violet-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-violet-700 transition-all duration-300 shadow-md transform hover:-translate-y-1">
+                            <span data-en="Get Guidance" data-hi="मार्गदर्शन प्राप्त करें" data-pa="ਮਾਰਗਦਰਸ਼ਨ ਪ੍ਰਾਪਤ ਕਰੋ" data-te="మార్గదర్శకత్వం పొందండి">Get Guidance</span>
+                        </button>
+                    </form>
+                    <div id="response-container" class="digital-hub-response mt-6 hidden">
+                        <div id="loading-indicator" class="flex justify-center items-center py-4 hidden space-x-4 text-gray-600 dark:text-gray-300">
+                            <div class="loader"></div>
+                            <p data-en="Our AI Mentor is typing..." data-hi="हमारा एआई मेंटर टाइप कर रहा है..." data-pa="ਸਾਡਾ ਏਆਈ ਮੈਂਟਰ ਟਾਈਪ ਕਰ ਰਿਹਾ ਹੈ..." data-te="మా AI మెంటర్ టైప్ చేస్తోంది...">Our AI Mentor is typing...</p>
+                        </div>
+                        <div id="response-text" class="text-gray-800 dark:text-gray-100"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="section contact py-16 md:py-24 bg-blue-700 text-white transition-colors duration-300">
+            <div class="max-w-6xl mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-white" data-en="Get in Touch" data-hi="संपर्क में रहें" data-pa="ਸੰਪਰਕ ਵਿੱਚ ਰਹੋ" data-te="సంప్రదింపులో ఉండండి">Get in Touch</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                    <div class="contact-item p-6 rounded-xl bg-white bg-opacity-10 backdrop-blur-md">
+                        <i class="fas fa-phone text-3xl mb-4"></i>
+                        <h4 class="text-xl font-bold mb-2" data-en="Helpline" data-hi="हेल्पलाइन" data-pa="ਹੈਲਪਲਾਈਨ" data-te="హెల్ప్‌లైన్">Helpline</h4>
+                        <p>+91 81439 03605</p>
+                    </div>
+                    <div class="contact-item p-6 rounded-xl bg-white bg-opacity-10 backdrop-blur-md">
+                        <i class="fas fa-envelope text-3xl mb-4"></i>
+                        <h4 class="text-xl font-bold mb-2" data-en="Email Support" data-hi="ईमेल सहायता" data-pa="ਈਮੇਲ ਸਹਾਇਤਾ" data-te="ఇమెయిల్ మద్దతు">Email Support</h4>
+                        <p>adarsh@gravityorg.in</p>
+                    </div>
+                    <div class="contact-item p-6 rounded-xl bg-white bg-opacity-10 backdrop-blur-md">
+                        <i class="fas fa-map-marker-alt text-3xl mb-4"></i>
+                        <h4 class="text-xl font-bold mb-2" data-en="Office Address" data-hi="कार्यालय का पता" data-pa="ਦਫਤਰ ਦਾ ਪਤਾ" data-te="కార్యాలయ చిరునామా">Office Address</h4>
+                        <p data-en="Bh-6, Lovely Professional University(LPU), 144411" data-hi="Bh-6, Lovely Professional University(LPU), 144411" data-pa="Bh-6, Lovely Professional University(LPU), 144411" data-te="Bh-6, Lovely Professional University(LPU), 144411">Bh-6, Lovely Professional University(LPU), 144411</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer bg-gray-800 dark:bg-gray-900 text-white py-12 md:py-16 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="footer-section">
+                    <h3 class="text-xl font-bold mb-1 text-blue-500" data-en="Udaaan Connect" data-hi="उड़ान कनेक्ट" data-pa="ਉਡਾਨ ਕਨੈਕਟ" data-te="ఉడాన్ కనెక్ట్">Udaaan Connect</h3>
+                    <p class="text-xs text-gray-400 mb-4 font-semibold uppercase tracking-wide" data-en="From Cottage Industry" data-hi="कुटीर उद्योग से" data-pa="ਕੁਟੀਰ ਉਦਯੋਗ ਤੋਂ" data-te="కుటీర పరిశ్రమ నుండి">From Cottage Industry</p>
+                    <p class="text-gray-300 text-sm">Empowering micropreneurs to fly high in business through learning and global connections.</p>
+                </div>
+                <div class="footer-section">
+                    <h3 class="text-xl font-bold mb-4 text-blue-500" data-en="Shiksha (Learning)" data-hi="शिक्षा (सीखना)" data-pa="ਸਿੱਖਿਆ (ਸਿੱਖਣਾ)" data-te="శిక్ష (నేర్చుకోవడం)">Shiksha (Learning)</h3>
+                    <ul>
+                        <li><a href="#udaan-shiksha" class="text-gray-300 hover:text-white transition-colors duration-300" data-en="Foundation Modules" data-hi="बुनियादी मॉड्यूल" data-pa="ਬੁਨਿਆਦੀ ਮੋਡਿਊਲ" data-te="ఫౌండేషన్ మాడ్యూల్స్">Foundation Modules</a></li>
+                        <li><a href="#udaan-shiksha" class="text-gray-300 hover:text-white transition-colors duration-300" data-en="High-Value Modules" data-hi="उच्च-मूल्य मॉड्यूल" data-pa="ਉੱਚ-ਮੁੱਲ ਮੋਡਿਊਲ" data-te="ఉన్నత-విలువ మాడ్యూల్స్">High-Value Modules</a></li>
+                        <li><a href="#digital-hub" class="text-gray-300 hover:text-white transition-colors duration-300" data-en="Digital Mentor Hub" data-hi="डिजिटल मेंटर हब" data-pa="ਡਿਜੀਟਲ ਮੈਂਟਰ ਹੱਬ" data-te="డిజిటల్ మెంటర్ హబ్">Digital Mentor Hub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="text-xl font-bold mb-4 text-blue-500" data-en="Vyapar (Selling)" data-hi="व्यापार (बेचना)" data-pa="ਵਪਾਰ (ਵੇਚਣਾ)" data-te="వ్యాపార (అమ్మడం)">Vyapar (Selling)</h3>
+                    <ul>
+                        <li><a href="#udaan-vyapar" class="text-gray-300 hover:text-white transition-colors duration-300" data-en="Global Industry Matching" data-hi="वैश्विक उद्योग मिलान" data-pa="ਗਲੋਬਲ ਉਦਯੋਗ ਮੈਚਿੰਗ" data-te="గ్లోబల్ ఇండస్ట్రీ మ్యాచింగ్">Global Industry Matching</a></li>
+                        <li><a href="#udaan-vyapar" class="text-gray-300 hover:text-white transition-colors duration-300" data-en="Export Logistics" data-hi="निर्यात रसद" data-pa="ਨਿਰਯਾਤ ਲੌਜਿਸਟਿਕਸ" data-te="ఎగుమతి లాజిస్టిక్స్">Export Logistics</a></li>
+                        <li><a href="https://seller.flipkart.com/" target="_blank" class="text-gray-300 hover:text-white transition-colors duration-300" data-en="E-commerce Platforms" data-hi="ई-कॉमर्स प्लेटफॉर्म" data-pa="ਈ-ਕਾਮਰਸ ਪਲੇਟਫਾਰਮ" data-te="ఇ-కామర్స్ ప్లాట్‌ఫారమ్‌లు">E-commerce Platforms</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="text-xl font-bold mb-4 text-blue-500" data-en="Connect With Us" data-hi="हमसे जुड़ें" data-pa="ਸਾਡੇ ਨਾਲ ਜੁੜੋ" data-te="మాతో కనెక్ట్ అవ్వండి">Connect With Us</h3>
+                    <ul>
+                        <li><a href="mailto:adarsh@gravityorg.in" class="text-gray-300 hover:text-white transition-colors duration-300"><i class="fas fa-envelope mr-2"></i> Email Support</a></li>
+                        <li><a href="tel:+918143903605" class="text-gray-300 hover:text-white transition-colors duration-300"><i class="fas fa-phone mr-2"></i> Call Helpline</a></li>
+                        <li><a href="https://www.linkedin.com/company/startup-india" target="_blank" class="text-gray-300 hover:text-white transition-colors duration-300"><i class="fab fa-linkedin mr-2"></i> LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="lang-select" class="hidden" data-lang="en"></div> <!-- Hidden element for language tracking -->
+            <div class="border-t border-gray-600 dark:border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p class="text-sm" data-en="&copy; 2025 Udaaan Connect. Learn to Lead, Connect to Conquer." data-hi="&copy; 2025 उड़ान कनेक्ट। नेतृत्व करना सीखें, जीतने के लिए जुड़ें।" data-pa="&copy; 2025 ਉਡਾਨ ਕਨੈਕਟ। ਅਗਵਾਈ ਕਰਨਾ ਸਿੱਖੋ, ਜਿੱਤਣ ਲਈ ਜੁੜੋ।" data-te="&copy; 2025 ఉడాన్ కనెక్ట్. నాయకత్వం నేర్చుకోండి, జయించడానికి కనెక్ట్ అవ్వండి.">&copy; 2025 Udaaan Connect. Learn to Lead, Connect to Conquer.</p>
+                <p class="text-xs mt-4 opacity-70">This platform provides information about government schemes and resources. Please verify all details with official government websites before making any decisions.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Program Detail Modals -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div id="program-modal" class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="modal-title" class="text-3xl font-bold text-gray-800 dark:text-white"></h2>
+                    <button onclick="closeProgramModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div id="modal-content" class="text-gray-700 dark:text-gray-300 space-y-6">
+                    <!-- Content will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store current language in a hidden div for easy access
+        // This acts as a proxy for the dynamic language selector value
+        let currentLanguage = localStorage.getItem('lang') || 'en';
+        const langSelect = document.createElement('div');
+        langSelect.id = 'lang-select';
+        langSelect.style.display = 'none';
+        langSelect.setAttribute('data-lang', currentLanguage);
+        document.body.appendChild(langSelect);
+
+        // Utility to parse markdown links and sources correctly
+        const parseMarkdownResponse = (text, sources) => {
+            let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            // Convert newline characters to break tags for display
+            html = html.replace(/\n\n/g, '<br><br>');
+            html = html.replace(/\n/g, '<br>');
+
+            if (sources && sources.length > 0) {
+                html += '<div class="source-list">';
+                html += '<strong class="block mb-2 text-sm text-gray-600 dark:text-gray-300">Sources / Citations:</strong>';
+                html += '<ul>';
+                sources.forEach((source) => {
+                    if (source.uri && source.title) {
+                        html += `<li><i class="fas fa-link text-xs text-blue-500 mr-2"></i><a href="${source.uri}" target="_blank" rel="noopener noreferrer">${source.title || source.uri}</a></li>`;
+                    }
+                });
+                html += '</ul></div>';
+            }
+            return html;
+        };
+
+        // --- Core Functions for UI/Theme/Lang ---
+        const updateContent = (lang) => {
+            document.querySelectorAll('[data-en]').forEach(element => {
+                const translation = element.getAttribute(`data-${lang}`);
+                if (translation) {
+                    element.textContent = translation;
+                }
+            });
+            document.querySelectorAll('[data-en-placeholder]').forEach(element => {
+                const placeholderTranslation = element.getAttribute(`data-${lang}-placeholder`);
+                if (placeholderTranslation) {
+                    element.placeholder = placeholderTranslation;
+                }
+            });
+            currentLanguage = lang;
+            document.getElementById('lang-select').setAttribute('data-lang', currentLanguage);
+        };
+
+        const updateThemeToggleIcon = (isDarkMode) => {
+            document.querySelectorAll('#theme-toggle i, #theme-toggle-mobile i').forEach(icon => {
+                if (isDarkMode) {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                } else {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                }
+            });
+        };
+
+        // --- Utility for redirecting to AI Hub ---
+        // Function to scroll to the Digital Hub and pre-fill a query
+        window.scrollToDigitalHub = function(prefillQuery) {
+            const digitalHub = document.getElementById('digital-hub');
+            const input = document.getElementById('digital-query-input');
+            if (digitalHub) {
+                digitalHub.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (input) {
+                input.value = prefillQuery;
+                input.focus();
+                // Optionally submit the query automatically (commented out for user control)
+                // document.getElementById('digital-query-form').dispatchEvent(new Event('submit'));
+            }
+        };
+
+
+        // --- Digital Guidance (AI API Call) ---
+        const getDigitalGuidance = async (query, language) => {
+            const apiKey = ""; // MANDATORY: API key must be empty
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const systemPrompt = `You are a professional, patient, and knowledgeable digital literacy tutor for rural micropreneurs in India. Your role is to provide simple, actionable, step-by-step instructions (using numbered lists or clear headings). Do not use jargon. Be encouraging and friendly. Do not use complex code blocks or technical terms. The response must be tailored to the user's business context and strictly in the language of the user's request, which is ${language}.`;
+
+            const userQuery = `Provide a step-by-step guide to the following query: "${query}"`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            const fetchOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+
+            let retries = 0;
+            const maxRetries = 3;
+            const initialDelay = 1000;
+            const errorResponse = {
+                en: "Sorry, I'm having trouble connecting to my AI Mentor. Please check your internet connection or try a simpler query.",
+                hi: "क्षमा करें, मुझे अपने एआई मेंटर से जुड़ने में समस्या हो रही है। कृपया अपना इंटरनेट कनेक्शन जांचें या एक सरल प्रश्न पूछें।",
+                pa: "ਮਾਫ਼ ਕਰਨਾ, ਮੈਨੂੰ ਆਪਣੇ ਏਆਈ ਮੈਂਟਰ ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਸਮੱਸਿਆ ਆ ਰਹੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਇੰਟਰਨੈਟ ਕਨੈਕਸ਼ਨ ਜਾਂਚੋ ਜਾਂ ਇੱਕ ਸਰਲ ਸਵਾਲ ਪੁੱਛੋ।",
+                te: "క్షమించండి, నా AI మెంటర్‌కు కనెక్ట్ చేయడంలో నాకు సమస్య ఉంది. దయచేసి మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేయండి లేదా సరళమైన ప్రశ్న అడగండి."
+            };
+
+            while (retries < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, fetchOptions);
+
+                    if (response.status === 429) {
+                        retries++;
+                        const delay = initialDelay * Math.pow(2, retries - 1);
+                        await new Promise(res => setTimeout(res, delay));
+                        continue;
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const candidate = result.candidates?.[0];
+
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                        const text = candidate.content.parts[0].text;
+                        let sources = [];
+                        const groundingMetadata = candidate.groundingMetadata;
+
+                        if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                            sources = groundingMetadata.groundingAttributions
+                                .map(attribution => ({
+                                    uri: attribution.web?.uri,
+                                    title: attribution.web?.title,
+                                }))
+                                .filter(source => source.uri && source.title);
+                        }
+                        return { text, sources };
+                    }
+                    throw new Error('Invalid AI response structure');
+
+                } catch (error) {
+                    retries++;
+                    console.error("API call failed:", error);
+                    if (retries < maxRetries) {
+                        const delay = initialDelay * Math.pow(2, retries - 1);
+                        await new Promise(res => setTimeout(res, delay));
+                    }
+                }
+            }
+            return { text: errorResponse[language] || errorResponse.en, sources: [] };
+        };
+
+        // --- Modal & Program Data (Updated) ---
+        window.openProgramModal = function(programId) {
+            const programData = getProgramData(programId);
+            const modalTitle = document.getElementById('modal-title');
+            modalTitle.textContent = programData.title;
+
+            // Simple approach to avoid complex nested translations in dynamic content
+            modalTitle.setAttribute('data-en', programData.title);
+
+            document.getElementById('modal-content').innerHTML = programData.content;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+
+            translateModalContent();
+            document.body.style.overflow = 'hidden';
+        };
+
+        // --- Product Showcase Logic (New) ---
+        window.openProductShowcase = function(categoryId) {
+             const products = {
+                'textiles': [
+                    { name: "Phulkari Dupatta", price: "₹2,500", moq: "10 units", icon: "fas fa-tshirt" },
+                    { name: "Handwoven Shawl", price: "₹1,800", moq: "20 units", icon: "fas fa-user-tie" },
+                    { name: "Embroidered Bag", price: "₹500", moq: "50 units", icon: "fas fa-shopping-bag" }
+                ],
+                'organics': [
+                    { name: "Mango Pickle (1kg)", price: "₹350", moq: "20 jars", icon: "fas fa-jar" },
+                    { name: "Apricot Jam", price: "₹250", moq: "30 jars", icon: "fas fa-apple-alt" },
+                    { name: "Sun-dried Spices", price: "₹400", moq: "10 kg", icon: "fas fa-mortar-pestle" }
+                ],
+                'bamboo': [
+                    { name: "Bamboo Toothbrush", price: "₹40", moq: "100 units", icon: "fas fa-tooth" },
+                    { name: "Woven Basket", price: "₹600", moq: "15 units", icon: "fas fa-shopping-basket" },
+                    { name: "Laptop Stand", price: "₹1,200", moq: "10 units", icon: "fas fa-laptop" }
+                ],
+                'terracotta': [
+                    { name: "Decorative Vase", price: "₹800", moq: "10 units", icon: "fas fa-wine-bottle" },
+                    { name: "Clay Water Bottle", price: "₹300", moq: "50 units", icon: "fas fa-tint" },
+                    { name: "Wall Hanging Art", price: "₹1,500", moq: "5 units", icon: "fas fa-image" }
+                ]
+            };
+
+            const categoryTitles = {
+                'textiles': 'Heritage Textiles Showcase',
+                'organics': 'Organic Preserves Showcase',
+                'bamboo': 'Eco-friendly Bamboo Showcase',
+                'terracotta': 'Terracotta Art Showcase'
+            };
+
+            const selectedProducts = products[categoryId] || [];
+            const title = categoryTitles[categoryId] || 'Product Showcase';
+
+            let htmlContent = `<div class="grid md:grid-cols-3 gap-6">`;
+
+            selectedProducts.forEach(product => {
+                // Encode message for WhatsApp
+                const message = `Hi, I'm interested in a sample of *${product.name}* from the *${title}*.`;
+                const whatsappUrl = `https://wa.me/918143903605?text=${encodeURIComponent(message)}`;
+
+                htmlContent += `
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow text-center border border-gray-200 dark:border-gray-600">
+                        <div class="w-full h-32 bg-gray-200 dark:bg-gray-600 rounded-lg mb-3 flex items-center justify-center text-gray-500 dark:text-gray-400">
+                             <i class="${product.icon || 'fas fa-box'} text-4xl"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-800 dark:text-white mb-1">${product.name}</h4>
+                        <p class="text-sm text-blue-600 dark:text-blue-400 font-semibold mb-2">Price: ${product.price}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Min Order: ${product.moq}</p>
+                        <a href="${whatsappUrl}" target="_blank" class="block w-full py-2 px-3 bg-violet-600 text-white text-xs font-bold rounded hover:bg-violet-700 transition-colors flex items-center justify-center gap-2">
+                            <span>Request Sample</span>
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                `;
+            });
+
+            htmlContent += `</div>
+                <div class="mt-8 text-center">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Are you a micropreneur making similar products? Join our supply chain!</p>
+                    <button onclick="closeProgramModal(); scrollToDigitalHub('How do I list my ${categoryId} products on Udaaan Vyapar?');" class="bg-white border border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors">
+                        List My Products Here
+                    </button>
+                </div>
+            `;
+
+            const modalTitle = document.getElementById('modal-title');
+            modalTitle.textContent = title;
+            modalTitle.setAttribute('data-en', title); // Simple fallback for translation logic
+            document.getElementById('modal-content').innerHTML = htmlContent;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+            translateModalContent();
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeProgramModal = function() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+            document.body.style.overflow = '';
+        };
+
+        function getProgramData(programId) {
+            // Simplified Program Data for the new structure
+            const programs = {
+                'foundation-modules': {
+                    title: 'Foundation Learning Modules (Regional)',
+                    content: `
+                        <div class="space-y-6">
+                            <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-400">Key Outcomes</h3>
+                            <ul class="space-y-3 list-disc list-inside text-gray-700 dark:text-gray-300">
+                                <li data-en="Master basic digital tools (WhatsApp Business, UPI)." data-hi="बुनियादी डिजिटल उपकरणों में महारत हासिल करें (व्हाट्सएप बिजनेस, यूपीआई)।" data-pa="ਬੁਨਿਆਦੀ ਡਿਜੀਟਲ ਉਪਕਰਨਾਂ ਵਿੱਚ ਮੁਹਾਰਤ ਹਾਸਲ ਕਰੋ (ਵਟਸਐਪ ਬਿਜ਼ਨਸ, ਯੂਪੀਆਈ)।" data-te="ప్రాథమిక డిజిటల్ సాధనాలను (వాట్సాప్ బిజినెస్, యూపీఐ) నేర్చుకోండి.">Master basic digital tools (WhatsApp Business, UPI).</li>
+                                <li data-en="Understand local market dynamics and consumer needs." data-hi="स्थानीय बाजार की गतिशीलता और उपभोक्ता की जरूरतों को समझें।" data-pa="ਸਥਾਨਕ ਬਾਜ਼ਾਰ ਦੀ ਗਤੀਸ਼ੀਲਤਾ ਅਤੇ ਖਪਤਕਾਰਾਂ ਦੀਆਂ ਲੋੜਾਂ ਨੂੰ ਸਮਝੋ।" data-te="స్థానిక మార్కెట్ గతిశీలత మరియు వినియోగదారుల అవసరాలను అర్థం చేసుకోండి.">Understand local market dynamics and consumer needs.</li>
+                                <li data-en="Learn simple profit calculation and expense tracking." data-hi="सरल लाभ गणना और व्यय ट्रैकिंग सीखें।" data-pa="ਸਰਲ ਲਾਭ ਗਣਨਾ ਅਤੇ ਖਰਚਾ ਟ੍ਰੈਕਿੰਗ ਸਿੱਖੋ।" data-te="సాధారణ లాభం గణన మరియు ఖర్చు ట్రాకింగ్‌ను నేర్చుకోండి.">Learn simple profit calculation and expense tracking.</li>
+                                <li data-en="Connect with local Self-Help Groups (SHGs) and microfinance options." data-hi="स्थानीय स्वयं सहायता समूहों (एसएचजी) और माइक्रोफाइनेंस विकल्पों से जुड़ें।" data-pa="ਸਥਾਨਕ ਸਵੈ-ਸਹਾਇਤਾ ਸਮੂਹਾਂ (SHGs) ਅਤੇ ਮਾਈਕ੍ਰੋਫਾਈਨੈਂਸ ਵਿਕਲਪਾਂ ਨਾਲ ਜੁੜੋ।" data-te="స్థానిక స్వయం సహాయక బృందాలు (SHGs) మరియు మైక్రోఫైనాన్స్ ఎంపికలతో కనెక్ట్ అవ్వండి.">Connect with local Self-Help Groups (SHGs) and microfinance options.</li>
+                            </ul>
+
+                            <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-400">Featured Courses</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-blue-50 dark:bg-gray-600 rounded-lg"><strong data-en="Gramin Digital Pathshala:">Gramin Digital Pathshala:</strong> <span data-en="Basic computer and mobile usage for business." data-hi="व्यवसाय के लिए बुनियादी कंप्यूटर और मोबाइल का उपयोग।" data-pa="ਕਾਰੋਬਾਰ ਲਈ ਬੁਨਿਆਦੀ ਕੰਪਿਊਟਰ ਅਤੇ ਮੋਬਾਈਲ ਦੀ ਵਰਤੋਂ।">Basic computer and mobile usage for business.</span></div>
+                                <div class="p-4 bg-blue-50 dark:bg-gray-600 rounded-lg"><strong data-en="Aamcho Account:">Aamcho Account:</strong> <span data-en="Simple accounting and financial literacy." data-hi="सरल लेखांकन और वित्तीय साक्षरता।" data-pa="ਸਰਲ ਲੇਖਾਕਾਰੀ ਅਤੇ ਵਿੱਤੀ ਸਾਖਰਤਾ।">Simple accounting and financial literacy.</span></div>
+                                <div class="p-4 bg-blue-50 dark:bg-gray-600 rounded-lg"><strong data-en="Local Schemes Navigating:">Local Schemes Navigating:</strong> <span data-en="Guide to state and district level funding programs." data-hi="राज्य और जिला स्तरीय फंडिंग कार्यक्रमों के लिए गाइड।" data-pa="ਰਾਜ ਅਤੇ ਜ਼ਿਲ੍ਹਾ ਪੱਧਰੀ ਫੰਡਿੰਗ ਪ੍ਰੋਗਰਾਮਾਂ ਲਈ ਗਾਈਡ।">Guide to state and district level funding programs.</span></div>
+                            </div>
+
+                            <div class="mt-8 p-6 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl text-white text-center">
+                                <h3 class="text-xl font-bold mb-2" data-en="Ready to Build Your Foundation?" data-hi="अपनी नींव बनाने के लिए तैयार हैं?" data-pa="ਆਪਣੀ ਨੀਂਹ ਬਣਾਉਣ ਲਈ ਤਿਆਰ ਹੋ?" data-te="మీ పునాదిని నిర్మించడానికి సిద్ధంగా ఉన్నారా?">Ready to Build Your Foundation?</h3>
+                                <p class="mb-4" data-en="Ask our AI Mentor for your personalized enrollment steps!" data-hi="अपने व्यक्तिगत नामांकन चरणों के लिए हमारे एआई मेंटर से पूछें!" data-pa="ਆਪਣੇ ਨਿੱਜੀ ਦਾਖਲਾ ਕਦਮਾਂ ਲਈ ਸਾਡੇ ਏਆਈ ਮੈਂਟਰ ਨੂੰ ਪੁੱਛੋ!" data-te="మీ వ్యక్తిగతీకరించిన నమోదు దశల కోసం మా AI మెంటర్‌ను అడగండి!">Ask our AI Mentor for your personalized enrollment steps!</p>
+                                <button onclick="closeProgramModal(); scrollToDigitalHub('What is the enrollment checklist for the Foundation Modules?');" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                    <span data-en="Get Enrollment Checklist (AI)" data-hi="नामांकन चेकलिस्ट प्राप्त करें (एआई)" data-pa="ਦਾਖਲਾ ਚੈਕਲਿਸਟ ਪ੍ਰਾਪਤ ਕਰੋ (ਏਆਈ)" data-te="నమోదు చెక్‌లిస్ట్ పొందండి (AI)">Get Enrollment Checklist (AI)</span>
+                                </button>
+                            </div>
+                        </div>
+                    `
+                },
+                'high-value-modules': {
+                    title: 'High-Value Learning Modules (Global)',
+                    content: `
+                        <div class="space-y-6">
+                            <h3 class="text-xl font-semibold text-violet-700 dark:text-violet-400">Key Outcomes</h3>
+                            <ul class="space-y-3 list-disc list-inside text-gray-700 dark:text-gray-300">
+                                <li data-en="Develop a compelling Unique Selling Proposition (USP) for global markets." data-hi="वैश्विक बाजारों के लिए एक आकर्षक अद्वितीय विक्रय प्रस्ताव (USP) विकसित करें।" data-pa="ਗਲੋਬਲ ਬਾਜ਼ਾਰਾਂ ਲਈ ਇੱਕ ਆਕਰਸ਼ਕ ਵਿਲੱਖਣ ਵਿਕਰੀ ਪ੍ਰਸਤਾਵ (USP) ਵਿਕਸਿਤ ਕਰੋ।">Develop a compelling Unique Selling Proposition (USP) for global markets.</li>
+                                <li data-en="Understand international quality and ethical sourcing standards." data-hi="अंतर्राष्ट्रीय गुणवत्ता और नैतिक सोर्सिंग मानकों को समझें।" data-pa="ਅੰਤਰਰਾਸ਼ਟਰੀ ਗੁਣਵੱਤਾ ਅਤੇ ਨੈਤਿਕ ਸੋਰਸਿੰਗ ਮਾਪਦੰਡਾਂ ਨੂੰ ਸਮਝੋ।">Understand international quality and ethical sourcing standards.</li>
+                                <li data-en="Master cross-border logistics and export documentation." data-hi="सीमा-पार रसद और निर्यात दस्तावेज़ीकरण में महारत हासिल करें।" data-pa="ਕ੍ਰਾਸ-ਬਾਰਡਰ ਲੌਜਿਸਟਿਕਸ ਅਤੇ ਨਿਰਯਾਤ ਦਸਤਾਵੇਜ਼ੀਕਰਨ ਵਿੱਚ ਮੁਹਾਰਤ ਹਾਸਲ ਕਰੋ।">Master cross-border logistics and export documentation.</li>
+                                <li data-en="Build a brand narrative suitable for international buyers." data-hi="अंतर्राष्ट्रीय खरीदारों के लिए उपयुक्त एक ब्रांड कथा का निर्माण करें।" data-pa="ਅੰਤਰਰਾਸ਼ਟਰੀ ਖਰੀਦਦਾਰਾਂ ਲਈ ਢੁਕਵੀਂ ਇੱਕ ਬ੍ਰਾਂਡ ਕਥਾ ਦਾ ਨਿਰਮਾਣ ਕਰੋ।">Build a brand narrative suitable for international buyers.</li>
+                            </ul>
+
+                            <h3 class="text-xl font-semibold text-violet-700 dark:text-violet-400">Featured Courses</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-violet-50 dark:bg-gray-600 rounded-lg"><strong data-en="Global Branding Bootcamp:">Global Branding Bootcamp:</strong> <span data-en="Crafting your USP and brand story." data-hi="अपनी यूएसपी और ब्रांड कहानी तैयार करना।" data-pa="ਆਪਣੀ USP ਅਤੇ ਬ੍ਰਾਂਡ ਕਹਾਣੀ ਤਿਆਰ ਕਰਨਾ।">Crafting your USP and brand story.</span></div>
+                                <div class="p-4 bg-violet-50 dark:bg-gray-600 rounded-lg"><strong data-en="Export Mastery:">Export Mastery:</strong> <span data-en="Documentation (IEC, Customs) and trade finance." data-hi="दस्तावेज़ीकरण (IEC, सीमा शुल्क) और व्यापार वित्त।" data-pa="ਦਸਤਾਵੇਜ਼ੀਕਰਨ (IEC, ਕਸਟਮਜ਼) ਅਤੇ ਵਪਾਰ ਵਿੱਤ।">Documentation (IEC, Customs) and trade finance.</span></div>
+                                <div class="p-4 bg-violet-50 dark:bg-gray-600 rounded-lg"><strong data-en="Quality & Certification:">Quality & Certification:</strong> <span data-en="Achieving ISO/other international quality marks." data-hi="ISO/अन्य अंतर्राष्ट्रीय गुणवत्ता चिह्न प्राप्त करना।" data-pa="ISO/ਹੋਰ ਅੰਤਰਰਾਸ਼ਟਰੀ ਗੁਣਵੱਤਾ ਚਿੰਨ੍ਹ ਪ੍ਰਾਪਤ ਕਰਨਾ।">Achieving ISO/other international quality marks.</span></div>
+                            </div>
+
+                            <div class="mt-8 p-6 bg-gradient-to-r from-violet-600 to-purple-700 rounded-xl text-white text-center">
+                                <h3 class="text-xl font-bold mb-2" data-en="Ready for Global Scaling?" data-hi="वैश्विक विस्तार के लिए तैयार हैं?" data-pa="ਗਲੋਬਲ ਵਿਸਤਾਰ ਲਈ ਤਿਆਰ ਹੋ?">Ready for Global Scaling?</h3>
+                                <p class="mb-4" data-en="Ask our AI Mentor for a sample lesson plan on 'Crafting Your USP'!" data-hi="अपनी 'यूएसपी क्राफ्टिंग' पर एक नमूना पाठ योजना के लिए हमारे एआई मेंटर से पूछें!" data-pa="ਆਪਣੀ 'USP ਕ੍ਰਾਫਟਿੰਗ' 'ਤੇ ਇੱਕ ਨਮੂਨਾ ਪਾਠ ਯੋਜਨਾ ਲਈ ਸਾਡੇ ਏਆਈ ਮੈਂਟਰ ਨੂੰ ਪੁੱਛੋ!">Ask our AI Mentor for a sample lesson plan on 'Crafting Your USP'!</p>
+                                <button onclick="closeProgramModal(); scrollToDigitalHub('Give me a sample lesson outline for Crafting Your USP module.');" class="bg-white text-violet-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                    <span data-en="See Global Module Sample (AI)" data-hi="ग्लोबल मॉड्यूल नमूना देखें (एआई)" data-pa="ਗਲੋਬਲ ਮੋਡਿਊਲ ਨਮੂਨਾ ਦੇਖੋ (ਏਆਈ)" data-te="గ్లోబల్ మాడ్యూల్ నమూనా చూడండి (AI)">See Global Module Sample (AI)</span>
+                                </button>
+                            </div>
+                        </div>
+                    `
+                },
+                'industry-matching': {
+                    title: 'Global Industry Matching (B2B)',
+                    content: `
+                        <div class="space-y-6">
+                            <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-400">How It Works</h3>
+                            <ol class="space-y-3 list-decimal list-inside text-gray-700 dark:text-gray-300">
+                                <li data-en="Profile Verification: Submit your business profile and product catalog for quality review." data-hi="प्रोफाइल सत्यापन: गुणवत्ता समीक्षा के लिए अपनी व्यावसायिक प्रोफ़ाइल और उत्पाद कैटलॉग जमा करें।" data-pa="ਪ੍ਰੋਫਾਈਲ ਤਸਦੀਕ: ਗੁਣਵੱਤਾ ਸਮੀਖਿਆ ਲਈ ਆਪਣੀ ਕਾਰੋਬਾਰੀ ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਉਤਪਾਦ ਕੈਟਾਲਾਗ ਜਮ੍ਹਾਂ ਕਰੋ।"><strong>Profile Verification:</strong> Submit your business profile and product catalog for quality review.</li>
+                                <li data-en="Global Sourcing Match: We match your products with procurement needs of verified international industries (e.g., sustainable textiles, ethnic foods, handicrafts)." data-hi="वैश्विक सोर्सिंग मिलान: हम आपके उत्पादों को सत्यापित अंतर्राष्ट्रीय उद्योगों की खरीद आवश्यकताओं के साथ मिलाते हैं (उदाहरण के लिए, टिकाऊ वस्त्र, जातीय खाद्य पदार्थ, हस्तशिल्प)।" data-pa="ਗਲੋਬਲ ਸੋਰਸਿੰਗ ਮੈਚ: ਅਸੀਂ ਤੁਹਾਡੇ ਉਤਪਾਦਾਂ ਨੂੰ ਪ੍ਰਮਾਣਿਤ ਅੰਤਰਰਾਸ਼ਟਰੀ ਉਦਯੋਗਾਂ ਦੀ ਖਰੀਦ ਲੋੜਾਂ ਨਾਲ ਮਿਲਾਉਂਦੇ ਹਾਂ (ਜਿਵੇਂ ਕਿ, ਟਿਕਾਊ ਟੈਕਸਟਾਈਲ, ਨਸਲੀ ਭੋਜਨ, ਹੈਂਡੀਕ੍ਰਾਫਟ)।"><strong>Global Sourcing Match:</strong> We match your products with procurement needs of verified international industries (e.g., sustainable textiles, ethnic foods, handicrafts).</li>
+                                <li data-en="Direct Introduction: Facilitate virtual or in-person meetings with buyers and provide negotiation support." data-hi="प्रत्यक्ष परिचय: खरीदारों के साथ आभासी या व्यक्तिगत बैठकों की सुविधा प्रदान करना और बातचीत सहायता प्रदान करना।" data-pa="ਸਿੱਧਾ ਜਾਣ-ਪਛਾਣ: ਖਰੀਦਦਾਰਾਂ ਨਾਲ ਵਰਚੁਅਲ ਜਾਂ ਵਿਅਕਤੀਗਤ ਮੁਲਾਕਾਤਾਂ ਦੀ ਸਹੂਲਤ ਅਤੇ ਗੱਲਬਾਤ ਸਹਾਇਤਾ ਪ੍ਰਦਾਨ ਕਰਨਾ।"><strong>Direct Introduction:</strong> Facilitate virtual or in-person meetings with buyers and provide negotiation support.</li>
+                                <li data-en="Contract Finalization: Assistance with drafting initial B2B contracts and agreements." data-hi="अनुबंध अंतिम रूप देना: प्रारंभिक B2B अनुबंधों और समझौतों के मसौदे में सहायता।" data-pa="ਇਕਰਾਰਨਾਮੇ ਨੂੰ ਅੰਤਿਮ ਰੂਪ ਦੇਣਾ: ਸ਼ੁਰੂਆਤੀ B2B ਇਕਰਾਰਨਾਮੇ ਅਤੇ ਸਮਝੌਤਿਆਂ ਦੇ ਖਰੜੇ ਵਿੱਚ ਸਹਾਇਤਾ।"><strong>Contract Finalization:</strong> Assistance with drafting initial B2B contracts and agreements.</li>
+                            </ol>
+
+                            <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-400">Ideal For</h3>
+                            <ul class="space-y-3 list-disc list-inside text-gray-700 dark:text-gray-300">
+                                <li data-en="Businesses with a clear USP and high-quality production standards." data-hi="स्पष्ट यूएसपी और उच्च गुणवत्ता वाले उत्पादन मानकों वाले व्यवसाय।" data-pa="ਸਪੱਸ਼ਟ USP ਅਤੇ ਉੱਚ-ਗੁਣਵੱਤਾ ਉਤਪਾਦਨ ਮਾਪਦੰਡਾਂ ਵਾਲੇ ਕਾਰੋਬਾਰ।">Businesses with a clear USP and high-quality production standards.</li>
+                                <li data-en="Micropreneurs ready to handle bulk orders and export logistics." data-hi="थोक ऑर्डर और निर्यात रसद को संभालने के लिए तैयार माइक्रो-उद्यमी।" data-pa="ਥੋਕ ਆਰਡਰ ਅਤੇ ਨਿਰਯਾਤ ਲੌਜਿਸਟਿਕਸ ਨੂੰ ਸੰਭਾਲਣ ਲਈ ਤਿਆਰ ਮਾਈਕ੍ਰੋ-ਉਦਮੀ।">Micropreneurs ready to handle bulk orders and export logistics.</li>
+                            </ul>
+
+                            <div class="mt-8 p-6 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl text-white text-center">
+                                <h3 class="text-xl font-bold mb-2" data-en="Start Your Global B2B Journey" data-hi="अपनी वैश्विक B2B यात्रा शुरू करें" data-pa="ਆਪਣੀ ਗਲੋਬਲ B2B ਯਾਤਰਾ ਸ਼ੁਰੂ ਕਰੋ" data-te="మీ గ్లోబల్ B2B ప్రయాణాన్ని ప్రారంభించండి">Start Your Global B2B Journey</h3>
+                                <p class="mb-4" data-en="Complete your vendor registration to explore international buyers." data-hi="अंतर्राष्ट्रीय खरीदारों का पता लगाने के लिए अपना विक्रेता पंजीकरण पूरा करें।" data-pa="ਅੰਤਰਰਾਸ਼ਟਰੀ ਖਰੀਦਦਾਰਾਂ ਦੀ ਖੋਜ ਕਰਨ ਲਈ ਆਪਣਾ ਵਿਕਰੇਤਾ ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਪੂਰਾ ਕਰੋ।">Complete your vendor registration to explore international buyers.</p>
+                                <a href="https://example.com/udaan/b2b-register" target="_blank" onclick="closeProgramModal();" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                    <span data-en="Register Your B2B Profile" data-hi="अपना B2B प्रोफाइल पंजीकृत करें" data-pa="ਆਪਣਾ B2B ਪ੍ਰੋਫਾਈਲ ਰਜਿਸਟਰ ਕਰੋ" data-te="మీ B2B ప్రొఫైల్ నమోదు చేయండి">Register Your B2B Profile</span>
+                                </a>
+                            </div>
+                        </div>
+                    `
+                },
+                'export-logistics': {
+                    title: 'Export Logistics & Compliance Support',
+                    content: `
+                        <div class="space-y-6">
+                            <h3 class="text-xl font-semibold text-violet-700 dark:text-violet-400">Our Services Include</h3>
+                            <ul class="space-y-3 list-disc list-inside text-gray-700 dark:text-gray-300">
+                                <li data-en="Packaging Consultancy: Advice on sustainable and export-compliant packaging." data-hi="पैकेजिंग परामर्श: टिकाऊ और निर्यात-अनुरूप पैकेजिंग पर सलाह।" data-pa="ਪੈਕੇਜਿੰਗ ਸਲਾਹਕਾਰ: ਟਿਕਾਊ ਅਤੇ ਨਿਰਯਾਤ-ਅਨੁਕੂਲ ਪੈਕੇਜਿੰਗ 'ਤੇ ਸਲਾਹ।"><strong>Packaging Consultancy:</strong> Advice on sustainable and export-compliant packaging.</li>
+                                <li data-en="Customs Clearance: Partnering with agents to simplify export and import formalities." data-hi="सीमा शुल्क निकासी: निर्यात और आयात औपचारिकताओं को सरल बनाने के लिए एजेंटों के साथ साझेदारी करना।" data-pa="ਕਸਟਮਜ਼ ਕਲੀਅਰੈਂਸ: ਨਿਰਯਾਤ ਅਤੇ ਆਯਾਤ ਰਸਮਾਂ ਨੂੰ ਸਰਲ ਬਣਾਉਣ ਲਈ ਏਜੰਟਾਂ ਨਾਲ ਸਾਂਝੇਦਾਰੀ ਕਰਨਾ।"><strong>Customs Clearance:</strong> Partnering with agents to simplify export and import formalities.</li>
+                                <li data-en="Shipping Facilitation: Booking and tracking low-cost cargo and courier services." data-hi="शिपिंग सुविधा: कम लागत वाले कार्गो और कूरियर सेवाओं की बुकिंग और ट्रैकिंग।" data-pa="ਸ਼ਿਪਿੰਗ ਸਹੂਲਤ: ਘੱਟ ਕੀਮਤ ਵਾਲੀਆਂ ਕਾਰਗੋ ਅਤੇ ਕੋਰੀਅਰ ਸੇਵਾਵਾਂ ਦੀ ਬੁਕਿੰਗ ਅਤੇ ਟ੍ਰੈਕਿੰਗ।"><strong>Shipping Facilitation:</strong> Booking and tracking low-cost cargo and courier services.</li>
+                                <li data-en="Trade Compliance: Ensuring adherence to foreign trade regulations and certification requirements." data-hi="व्यापार अनुपालन: विदेशी व्यापार नियमों और प्रमाणीकरण आवश्यकताओं का पालन सुनिश्चित करना।" data-pa="ਵਪਾਰ ਦੀ ਪਾਲਣਾ: ਵਿਦੇਸ਼ੀ ਵਪਾਰ ਨਿਯਮਾਂ ਅਤੇ ਪ੍ਰਮਾਣੀਕਰਨ ਲੋੜਾਂ ਦੀ ਪਾਲਣਾ ਨੂੰ ਯਕੀਨੀ ਬਣਾਉਣਾ।"><strong>Trade Compliance:</strong> Ensuring adherence to foreign trade regulations and certification requirements.</li>
+                            </ul>
+
+                            <h3 class="text-xl font-semibold text-violet-700 dark:text-violet-400">Key Documents Handled</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-violet-50 dark:bg-gray-600 rounded-lg" data-en="Import Export Code (IEC) application" data-hi="आयात निर्यात कोड (IEC) आवेदन">Import Export Code (IEC) application</div>
+                                <div class="p-4 bg-violet-50 dark:bg-gray-600 rounded-lg" data-en="Bill of Lading / Airway Bill" data-hi="लदान बिल / एयरवे बिल">Bill of Lading / Airway Bill</div>
+                                <div class="p-4 bg-violet-50 dark:bg-gray-600 rounded-lg" data-en="Certificate of Origin" data-hi="मूल प्रमाण पत्र">Certificate of Origin</div>
+                                <div class="p-4 bg-violet-50 dark:bg-gray-600 rounded-lg" data-en="Inspection Certificates" data-hi="निरीक्षण प्रमाण पत्र">Inspection Certificates</div>
+                            </div>
+
+                            <div class="mt-8 p-6 bg-gradient-to-r from-violet-600 to-purple-700 rounded-xl text-white text-center">
+                                <h3 class="text-xl font-bold mb-2" data-en="Simplify Your Export Process" data-hi="अपनी निर्यात प्रक्रिया को सरल बनाएं" data-pa="ਆਪਣੀ ਨਿਰਯਾਤ ਪ੍ਰਕਿਰਿਆ को सरल बनाएं" data-te="మీ ఎగుమతి ప్రక్రియను సులభతరం చేయండి">Simplify Your Export Process</h3>
+                                <p class="mb-4" data-en="View the official guide to required export documentation." data-hi="आवश्यक निर्यात दस्तावेज़ीकरण के लिए आधिकारिक गाइड देखें।" data-pa="ਲੋੜੀਂਦੇ ਨਿਰਯਾਤ ਦਸਤਾਵੇਜ਼ੀਕਰਨ ਲਈ ਅਧਿਕਾਰਤ ਗਾਈਡ ਦੇਖੋ।">View the official guide to required export documentation.</p>
+                                <a href="https://www.dgft.gov.in/" target="_blank" onclick="closeProgramModal();" class="bg-white text-violet-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                    <span data-en="View DGFT Trade Guide" data-hi="डीजीएफटी व्यापार गाइड देखें" data-pa="ਡੀਜੀਐਫਟੀ ਵਪਾਰ ਗਾਈਡ ਦੇਖੋ" data-te="DGFT వ్యాపార గైడ్ చూడండి">View DGFT Trade Guide</span>
+                                </a>
+                            </div>
+                        </div>
+                    `
+                },
+                'digital-commerce': {
+                    title: 'Digital Commerce Exposure (B2C)',
+                    content: `
+                        <div class="space-y-6">
+                            <h3 class="text-xl font-semibold text-green-700 dark:text-green-400">International E-commerce</h3>
+                            <ul class="space-y-3 list-disc list-inside text-gray-700 dark:text-gray-300">
+                                <li data-en="Platform Setup: Guided setup on platforms like Amazon Global Seller and Etsy." data-hi="प्लेटफ़ॉर्म सेटअप: Amazon Global Seller और Etsy जैसे प्लेटफ़ॉर्म पर निर्देशित सेटअप।" data-pa="ਪਲੇਟਫਾਰਮ ਸੈੱਟਅੱਪ: ਐਮਾਜ਼ਾਨ ਗਲੋਬਲ ਸੇਲਰ ਅਤੇ ਏਟਸੀ ਵਰਗੇ ਪਲੇਟਫਾਰਮਾਂ 'ਤੇ ਗਾਈਡਡ ਸੈੱਟਅੱਪ।"><strong>Platform Setup:</strong> Guided setup on platforms like Amazon Global Seller and Etsy.</li>
+                                <li data-en="Cross-Border Payments: Integrating secure international payment gateways." data-hi="सीमा-पार भुगतान: सुरक्षित अंतर्राष्ट्रीय भुगतान गेटवे को एकीकृत करना।" data-pa="ਕ੍ਰਾਸ-ਬਾਰਡਰ ਭੁਗਤਾਨ: ਸੁਰੱਖਿਅਤ ਅੰਤਰਰਾਸ਼ਟਰੀ ਭੁਗਤਾਨ ਗੇਟਵੇ ਨੂੰ ਜੋੜਨਾ।"><strong>Cross-Border Payments:</strong> Integrating secure international payment gateways.</li>
+                                <li data-en="Listing Optimization: Training on SEO, high-quality photography, and compelling product descriptions for foreign buyers." data-hi="सूची अनुकूलन: विदेशी खरीदारों के लिए एसईओ, उच्च-गुणवत्ता वाली फोटोग्राफी और आकर्षक उत्पाद विवरण पर प्रशिक्षण।" data-pa="ਸੂਚੀ ਅਨੁਕੂਲਨ: ਵਿਦੇਸ਼ੀ ਖਰੀਦਦਾਰਾਂ ਲਈ SEO, ਉੱਚ-ਗੁਣਵੱਤਾ ਵਾਲੀ ਫੋਟੋਗ੍ਰਾਫੀ, ਅਤੇ ਆਕਰਸ਼ਕ ਉਤਪਾਦ ਵਰਣਨ 'ਤੇ ਸਿਖਲਾਈ।"><strong>Listing Optimization:</strong> Training on SEO, high-quality photography, and compelling product descriptions for foreign buyers.</li>
+                            </ul>
+
+                            <h3 class="text-xl font-semibold text-green-700 dark:text-green-400">Recommended Platforms</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <a href="https://services.amazon.in/sell-globally.html" target="_blank" class="p-4 bg-green-50 dark:bg-gray-600 rounded-lg text-center hover:shadow-md transition">Amazon Global</a>
+                                <a href="https://www.etsy.com/sell" target="_blank" class="p-4 bg-green-50 dark:bg-gray-600 rounded-lg text-center hover:shadow-md transition">Etsy Seller</a>
+                                <a href="https://www.alibaba.com/sell" target="_blank" class="p-4 bg-green-50 dark:bg-gray-600 rounded-lg text-center hover:shadow-md transition">Alibaba (B2B)</a>
+                            </div>
+
+                            <div class="mt-8 p-6 bg-gradient-to-r from-green-600 to-emerald-700 rounded-xl text-white text-center">
+                                <h3 class="text-xl font-bold mb-2" data-en="Launch Your Products Globally" data-hi="अपने उत्पादों को विश्व स्तर पर लॉन्च करें" data-pa="अपने उत्पादों को विश्व स्तर पर लॉन्च करें" data-te="మీ ఉత్పత్తులను ప్రపంచవ్యాప్తంగా ప్రారంభించండి">Launch Your Products Globally</h3>
+                                <p class="mb-4" data-en="Start your cross-border sales journey on a leading global marketplace." data-hi="एक प्रमुख वैश्विक बाज़ार पर अपनी सीमा पार बिक्री यात्रा शुरू करें।" data-pa="ਇੱਕ ਪ੍ਰਮੁੱਖ ਗਲੋਬਲ ਬਾਜ਼ਾਰ 'ਤੇ ਆਪਣੀ ਕ੍ਰਾਸ-ਬਾਰਡਰ ਵਿਕਰੀ ਯਾਤਰਾ ਸ਼ੁਰੂ ਕਰੋ।">Start your cross-border sales journey on a leading global marketplace.</p>
+                                <a href="https://services.amazon.in/sell-globally.html" target="_blank" onclick="closeProgramModal();" class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                    <span data-en="Start Amazon Global Selling" data-hi="अमेज़न ग्लोबल सेलिंग शुरू करें" data-pa="ਐਮਾਜ਼ਾਨ ਗਲੋਬਲ ਸੇਲਿੰਗ ਸ਼ੁਰੂ ਕਰੋ" data-te="అమెజాన్ గ్లోబల్ సెల్లింగ్ ప్రారంభించండి">Start Amazon Global Selling</span>
+                                </a>
+                            </div>
+                        </div>
+                    `
+                }
+            };
+            return programs[programId] || { title: 'Program Details', content: '<p>Program information not available.</p>' };
+        }
+
+        const translateModalContent = () => {
+            const currentLang = document.getElementById('lang-select').getAttribute('data-lang') || 'en';
+            document.querySelectorAll('#modal-content [data-en]').forEach(element => {
+                const translation = element.getAttribute(`data-${currentLang}`);
+                if (translation) {
+                    // Check if element contains children (like <strong> tags inside <li>)
+                    if (element.children.length === 0) {
+                         element.textContent = translation;
+                    } else {
+                        // For structured elements, only update the text content that is not within nested tags
+                        // This is a simplified approach to avoid breaking HTML structure like <strong>Profile Verification:</strong>
+                        let originalHtml = element.innerHTML;
+                        const strongTag = element.querySelector('strong');
+                        if (strongTag) {
+                            // If a strong tag exists, assume the structure is '<strong>Title:</strong> Description'
+                            const strongText = strongTag.textContent;
+                            if (originalHtml.includes(strongText)) {
+                                element.innerHTML = originalHtml.replace(strongText, translation);
+                            }
+                        } else {
+                            element.textContent = translation;
+                        }
+                    }
+                }
+            });
+        };
+
+        // --- Event Listeners and Initial State Setup ---
+        window.onload = () => {
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                updateThemeToggleIcon(true);
+            } else {
+                updateThemeToggleIcon(false);
+            }
+
+            // Set initial language
+            const savedLang = localStorage.getItem('lang') || 'en';
+            const languageSelector = document.getElementById('language-selector');
+            const languageSelectorMobile = document.getElementById('language-selector-mobile');
+
+            if (languageSelector) languageSelector.value = savedLang;
+            if (languageSelectorMobile) languageSelectorMobile.value = savedLang.substring(0, 2);
+
+            updateContent(savedLang);
+
+            // Add event listeners for language selectors
+            const languageChangeHandler = (event) => {
+                const newLang = event.target.value;
+                localStorage.setItem('lang', newLang);
+                updateContent(newLang);
+                // Also update the modal content if open
+                const modalOverlay = document.getElementById('modal-overlay');
+                if (!modalOverlay.classList.contains('hidden')) {
+                     translateModalContent();
+                }
+            };
+
+            if (languageSelector) languageSelector.addEventListener('change', languageChangeHandler);
+            if (languageSelectorMobile) languageSelectorMobile.addEventListener('change', languageChangeHandler);
+
+            // Add event listeners for theme toggles
+            const toggleDarkMode = () => {
+                const isDarkMode = document.body.classList.toggle('dark-mode');
+                localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+                updateThemeToggleIcon(isDarkMode);
+            };
+            document.getElementById('theme-toggle').addEventListener('click', toggleDarkMode);
+            document.getElementById('theme-toggle-mobile').addEventListener('click', toggleDarkMode);
+
+
+            // --- Mobile Sidebar Functionality ---
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileSidebar = document.getElementById('mobile-sidebar');
+            const mobileSidebarClose = document.getElementById('mobile-sidebar-close');
+            const mobileSidebarOverlay = document.getElementById('mobile-sidebar-overlay');
+            const hamburger = document.querySelector('.hamburger');
+
+            const closeMobileSidebar = function() {
+                mobileSidebar.classList.remove('mobile-sidebar-open');
+                mobileSidebarOverlay.classList.remove('mobile-sidebar-overlay-active');
+                if (hamburger) hamburger.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mobileSidebar.classList.add('mobile-sidebar-open');
+                    mobileSidebarOverlay.classList.add('mobile-sidebar-overlay-active');
+                    hamburger.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            // Event listeners for closing sidebar
+            if (mobileSidebarClose) mobileSidebarClose.addEventListener('click', closeMobileSidebar);
+            if (mobileSidebarOverlay) mobileSidebarOverlay.addEventListener('click', closeMobileSidebar);
+
+            // Close sidebar when clicking on nav links
+            document.querySelectorAll('.mobile-nav-link').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    setTimeout(closeMobileSidebar, 100);
+                });
+            });
+
+            // Close sidebar on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileSidebar && mobileSidebar.classList.contains('mobile-sidebar-open')) {
+                    closeMobileSidebar();
+                }
+            });
+
+            // Active navigation link highlighting
+            const updateActiveNavLink = () => {
+                const sections = ['home', 'udaan-shiksha', 'udaan-vyapar', 'digital-hub', 'contact'];
+                const scrollPosition = window.scrollY + 100;
+
+                sections.forEach(sectionId => {
+                    const section = document.getElementById(sectionId);
+                    const navLinks = document.querySelectorAll(`[href="#${sectionId}"]`);
+
+                    if (section) {
+                        const sectionTop = section.offsetTop;
+                        const sectionHeight = section.offsetHeight;
+
+                        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                            navLinks.forEach(link => link.classList.add('active'));
+                        } else {
+                            navLinks.forEach(link => link.classList.remove('active'));
+                        }
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', updateActiveNavLink);
+            updateActiveNavLink();
+
+            // Digital Hub Form Submission
+            const digitalQueryForm = document.getElementById('digital-query-form');
+            const digitalQueryInput = document.getElementById('digital-query-input');
+            const responseContainer = document.getElementById('response-container');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const responseText = document.getElementById('response-text');
+
+            digitalQueryForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const query = digitalQueryInput.value.trim();
+                const currentLang = document.getElementById('lang-select').getAttribute('data-lang') || 'en';
+
+                if (query === "") return;
+
+                responseContainer.classList.remove('hidden');
+                loadingIndicator.classList.remove('hidden');
+                responseText.innerHTML = '';
+
+                try {
+                    const { text, sources } = await getDigitalGuidance(query, currentLang);
+                    responseText.innerHTML = parseMarkdownResponse(text, sources);
+                } catch (error) {
+                    console.error("Error fetching guidance:", error);
+                    const errorResponse = {
+                        en: "Sorry, I'm having trouble connecting to my AI Mentor. Please check your internet connection or try a simpler query.",
+                        hi: "क्षमा करें, मुझे अपने एआई मेंटर से जुड़ने में समस्या हो रही है। कृपया अपना इंटरनेट कनेक्शन जांचें या एक सरल प्रश्न पूछें।",
+                        pa: "ਮਾਫ਼ ਕਰਨਾ, ਮੈਨੂੰ ਆਪਣੇ ਏਆਈ ਮੈਂਟਰ ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਸਮੱਸਿਆ ਆ ਰਹੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਇੰਟਰਨੈਟ ਕਨੈਕਸ਼ਨ ਜਾਂਚੋ ਜਾਂ ਇੱਕ ਸਰਲ ਸਵਾਲ ਪੁੱਛੋ।",
+                        te: "క్షమించండి, నా AI మెంటర్‌కు కనెక్ట్ చేయడంలో నాకు సమస్య ఉంది. దయచేసి మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేయండి లేదా సరళమైన ప్రశ్న అడగండి."
+                    };
+                    responseText.textContent = errorResponse[currentLang] || errorResponse.en;
+                } finally {
+                    loadingIndicator.classList.add('hidden');
+                }
+            });
+        };
+    </script>
+</body>
+</html>
