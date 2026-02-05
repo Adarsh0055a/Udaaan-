@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Udaaan Connect - From Cottage Industry to Global Markets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary: #9333ea;
+            --accent: #059669;
+            --gradient-primary: linear-gradient(135deg, #1e40af, #3b82f6);
+            --gradient-secondary: linear-gradient(135deg, #9333ea, #7c3aed);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.95), rgba(147, 51, 234, 0.85)), 
+                        url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .stagger-animation > * {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: stagger 0.5s ease-out forwards;
+        }
+        
+        @keyframes stagger {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+        .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Hero Section -->
+    <section class="hero-gradient min-h-screen text-white relative overflow-hidden">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="relative z-50 py-6 px-4 md:px-8">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
+                        <i class="fas fa-hand-holding-heart text-blue-600 text-2xl"></i>
+                    </div>
+                    <span class="text-2xl font-bold">Udaaan Connect</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="hover:text-blue-200 transition">Features</a>
+                    <a href="#testimonials" class="hover:text-blue-200 transition">Success Stories</a>
+                    <a href="#how-it-works" class="hover:text-blue-200 transition">How It Works</a>
+                    <a href="#contact" class="hover:text-blue-200 transition">Contact</a>
+                </div>
+                <a href="login.html" class="bg-white text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-blue-50 transition pulse-animation">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Go to Platform
+                </a>
+            </div>
+        </nav>
+
+        <!-- Hero Content -->
+        <div class="relative z-40 max-w-7xl mx-auto px-4 md:px-8 pt-20 md:pt-32 pb-20">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="stagger-animation">
+                    <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                        From <span class="text-yellow-300">Cottage</span> to <span class="text-green-300">Global</span> Markets
+                    </h1>
+                    <p class="text-xl md:text-2xl text-blue-100 mb-8">
+                        Empowering rural micropreneurs with world-class training and direct access to international buyers.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#cta" class="bg-blue-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-600 transition transform hover:-translate-y-1 text-center">
+                            <i class="fas fa-rocket mr-2"></i> Start Your Journey
+                        </a>
+                        <a href="#video-demo" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-blue-600 transition text-center">
+                            <i class="fas fa-play-circle mr-2"></i> Watch Demo
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="relative floating-animation">
+                    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="stat-card p-4 rounded-xl text-center">
+                                <div class="text-3xl font-bold mb-2">500+</div>
+                                <div class="text-sm">Micropreneurs Empowered</div>
+                            </div>
+                            <div class="stat-card p-4 rounded-xl text-center">
+                                <div class="text-3xl font-bold mb-2">₹2.5Cr+</div>
+                                <div class="text-sm">Revenue Generated</div>
+                            </div>
+                            <div class="stat-card p-4 rounded-xl text-center">
+                                <div class="text-3xl font-bold mb-2">25+</div>
+                                <div class="text-sm">Countries Reached</div>
+                            </div>
+                            <div class="stat-card p-4 rounded-xl text-center">
+                                <div class="text-3xl font-bold mb-2">94%</div>
+                                <div class="text-sm">Success Rate</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Timeline -->
+                        <div class="mt-8">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm">Local Craftsman</span>
+                                <span class="text-sm">Global Entrepreneur</span>
+                            </div>
+                            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-green-400 to-blue-500 w-3/4"></div>
+                            </div>
+                            <div class="flex justify-between mt-1 text-xs">
+                                <span>Training</span>
+                                <span>Export Ready</span>
+                                <span>Global Markets</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+            <div class="animate-bounce">
+                <i class="fas fa-chevron-down text-2xl text-white/60"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Dual Pathway to Success
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Choose your journey - build locally or scale globally. We provide both paths to success.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Udaaan Shiksha Card -->
+                <div class="group bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-8 border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-blue-900">Udaaan Shiksha</h3>
+                    </div>
+                    <p class="text-gray-700 mb-6">
+                        World-class training modules designed specifically for rural entrepreneurs. From basic digital literacy to advanced export documentation.
+                    </p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Digital Literacy Basics</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Financial Management</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Quality Standards & Certification</span>
+                        </li>
+                    </ul>
+                    <a href="login.html#udaan-shiksha" class="inline-flex items-center text-blue-600 font-semibold group-hover:text-blue-800">
+                        Explore Learning Path
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </a>
+                </div>
+                
+                <!-- Udaaan Vyapar Card -->
+                <div class="group bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-8 border-2 border-purple-200 hover:border-purple-400 transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-globe text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-purple-900">Udaaan Vyapar</h3>
+                    </div>
+                    <p class="text-gray-700 mb-6">
+                        Direct access to global markets through industry matching, export support, and international e-commerce integration.
+                    </p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Global Industry Matching</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Export Logistics Support</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>International E-commerce</span>
+                        </li>
+                    </ul>
+                    <a href="login.html#udaan-vyapar" class="inline-flex items-center text-purple-600 font-semibold group-hover:text-purple-800">
+                        Explore Market Access
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Your Journey in 4 Simple Steps</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    From local artisan to global entrepreneur - here's how we make it happen
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="relative">
+                    <div class="absolute -left-4 top-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                        1
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 pt-10 shadow-lg">
+                        <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fas fa-user-check text-blue-600 text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Profile Assessment</h4>
+                        <p class="text-gray-600">We evaluate your current skills and business needs to create a personalized growth plan.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="relative">
+                    <div class="absolute -left-4 top-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                        2
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 pt-10 shadow-lg">
+                        <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fas fa-graduation-cap text-purple-600 text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Skill Development</h4>
+                        <p class="text-gray-600">Access tailored training modules in your preferred language and learning pace.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="relative">
+                    <div class="absolute -left-4 top-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                        3
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 pt-10 shadow-lg">
+                        <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fas fa-tools text-green-600 text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Product Enhancement</h4>
+                        <p class="text-gray-600">Improve product quality, packaging, and branding for global market standards.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="relative">
+                    <div class="absolute -left-4 top-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                        4
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 pt-10 shadow-lg">
+                        <div class="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fas fa-globe text-orange-600 text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Market Access</h4>
+                        <p class="text-gray-600">Connect with global buyers through our B2B network and e-commerce platforms.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timeline Connector -->
+            <div class="hidden md:block">
+                <div class="relative h-2 bg-blue-200 mx-16 -mt-8 rounded-full">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full w-3/4"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section id="testimonials" class="py-20 bg-gradient-to-br from-blue-900 to-purple-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Success Stories</h2>
+                <p class="text-xl text-blue-200 max-w-3xl mx-auto">
+                    Hear from micropreneurs who transformed their businesses through Udaaan Connect
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center text-2xl font-bold mr-4">
+                            PK
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Priya Kumari</h4>
+                            <p class="text-blue-200">Textile Artist, Punjab</p>
+                        </div>
+                    </div>
+                    <p class="text-blue-100 mb-6 italic">
+                        "From selling Phulkari dupattas at local fairs to exporting to 15 countries - Udaaan Connect made it possible!"
+                    </p>
+                    <div class="flex items-center">
+                        <span class="text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </span>
+                        <span class="ml-2 font-bold">₹12L+ Revenue</span>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-green-400 to-blue-400 flex items-center justify-center text-2xl font-bold mr-4">
+                            RS
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Rajesh Sharma</h4>
+                            <p class="text-blue-200">Bamboo Craftsman, Assam</p>
+                        </div>
+                    </div>
+                    <p class="text-blue-100 mb-6 italic">
+                        "The export documentation training was a game-changer. Now my bamboo products reach customers in Europe!"
+                    </p>
+                    <div class="flex items-center">
+                        <span class="text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </span>
+                        <span class="ml-2 font-bold">₹8L+ Revenue</span>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="testimonial-card rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center text-2xl font-bold mr-4">
+                            MP
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Meera Patel</h4>
+                            <p class="text-blue-200">Organic Food Producer, Gujarat</p>
+                        </div>
+                    </div>
+                    <p class="text-blue-100 mb-6 italic">
+                        "Digital mentor hub helped me setup my Etsy store. Now I ship organic pickles worldwide!"
+                    </p>
+                    <div class="flex items-center">
+                        <span class="text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </span>
+                        <span class="ml-2 font-bold">₹6L+ Revenue</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+                <div class="text-center">
+                    <div class="text-4xl font-bold mb-2">500+</div>
+                    <div class="text-blue-200">Successful Entrepreneurs</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold mb-2">25+</div>
+                    <div class="text-blue-200">Countries Reached</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold mb-2">94%</div>
+                    <div class="text-blue-200">Success Rate</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold mb-2">₹2.5Cr+</div>
+                    <div class="text-blue-200">Total Revenue Generated</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Demo -->
+    <section id="video-demo" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 md:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">See Udaaan Connect in Action</h2>
+                <p class="text-xl text-gray-600">Watch how we transform local businesses into global success stories</p>
+            </div>
+            
+            <!-- Video Placeholder -->
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl">
+                <div class="aspect-w-16 aspect-h-9 bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6 cursor-pointer hover:scale-110 transition-transform">
+                            <i class="fas fa-play text-white text-3xl ml-2"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Watch Demo Video</h3>
+                        <p class="text-white/80">3 minutes • See real transformations</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Key Highlights -->
+            <div class="grid md:grid-cols-3 gap-6 mt-12">
+                <div class="text-center p-6 bg-blue-50 rounded-2xl">
+                    <i class="fas fa-language text-3xl text-blue-600 mb-4"></i>
+                    <h4 class="font-bold text-lg mb-2">Multi-Language Support</h4>
+                    <p class="text-gray-600">Available in English, Hindi, Punjabi, and Telugu</p>
+                </div>
+                <div class="text-center p-6 bg-purple-50 rounded-2xl">
+                    <i class="fas fa-robot text-3xl text-purple-600 mb-4"></i>
+                    <h4 class="font-bold text-lg mb-2">AI Digital Mentor</h4>
+                    <p class="text-gray-600">24/7 guidance for all your business queries</p>
+                </div>
+                <div class="text-center p-6 bg-green-50 rounded-2xl">
+                    <i class="fas fa-handshake text-3xl text-green-600 mb-4"></i>
+                    <h4 class="font-bold text-lg mb-2">Direct Buyer Access</h4>
+                    <p class="text-gray-600">Connect with verified international buyers</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="cta" class="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
+        <!-- Animated Background -->
+        <div class="absolute inset-0">
+            <div class="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full filter blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-64 h-64 bg-white/10 rounded-full filter blur-3xl"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-8 text-center">
+            <h2 class="text-4xl md:text-6xl font-bold mb-6">Ready to Launch Your Global Journey?</h2>
+            <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+                Join 500+ micropreneurs who have transformed their businesses with Udaaan Connect
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <a href="login.html" class="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-50 transition transform hover:-translate-y-1 shadow-lg pulse-animation">
+                    <i class="fas fa-rocket mr-2"></i> Start Free Trial
+                </a>
+                <a href="tel:+918143903605" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/20 transition">
+                    <i class="fas fa-phone mr-2"></i> Call Now: +91 81439 03605
+                </a>
+            </div>
+            
+            <!-- Trust Indicators -->
+            <div class="grid grid-cols-2 md:grid-cars-4 gap-6 text-center">
+                <div>
+                    <div class="text-2xl font-bold mb-2">✓</div>
+                    <div class="text-sm">No Upfront Cost</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold mb-2">✓</div>
+                    <div class="text-sm">Government Recognized</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold mb-2">✓</div>
+                    <div class="text-sm">Multi-Language Support</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold mb-2">✓</div>
+                    <div class="text-sm">24/7 AI Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 md:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-hand-holding-heart text-white text-2xl"></i>
+                        </div>
+                        <span class="text-2xl font-bold">Udaaan Connect</span>
+                    </div>
+                    <p class="text-gray-400">
+                        Empowering rural micropreneurs to reach global markets through training and connections.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="login.html" class="text-gray-400 hover:text-white transition">Platform Login</a></li>
+                        <li><a href="#features" class="text-gray-400 hover:text-white transition">Features</a></li>
+                        <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition">How It Works</a></li>
+                        <li><a href="#testimonials" class="text-gray-400 hover:text-white transition">Success Stories</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Contact</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <i class="fas fa-phone text-blue-400 mr-3"></i>
+                            <span>+91 81439 03605</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope text-blue-400 mr-3"></i>
+                            <span>adarsh@gravityorg.in</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-blue-400 mr-3"></i>
+                            <span>LPU, Punjab 144411</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Supported By</h4>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="bg-gray-800 px-4 py-2 rounded-lg">Startup India</div>
+                        <div class="bg-gray-800 px-4 py-2 rounded-lg">MSME Ministry</div>
+                        <div class="bg-gray-800 px-4 py-2 rounded-lg">NITI Aayog</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Udaaan Connect. All rights reserved. | From Cottage Industry to Global Markets</p>
+                <p class="text-sm mt-2">This platform provides information about government schemes and resources. Please verify details with official sources.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fadeIn');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Add CSS for fade-in animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fadeIn {
+                animation: fadeIn 1s ease-out forwards;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Video play functionality
+        document.querySelector('.fa-play').closest('div').addEventListener('click', function() {
+            alert('Video player would launch here. In production, this would embed a YouTube/Vimeo player.');
+        });
+        
+        // Count-up animation for stats
+        function animateCounter(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start).toLocaleString();
+                }
+            }, 16);
+        }
+        
+        // Animate stats when in view
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statElements = entry.target.querySelectorAll('.text-4xl');
+                    statElements.forEach(el => {
+                        const target = parseInt(el.textContent.replace(/[^0-9]/g, ''));
+                        if (!isNaN(target)) {
+                            animateCounter(el, target);
+                        }
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        const statsSection = document.getElementById('testimonials');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    </script>
+</body>
+</html>i
