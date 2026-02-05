@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Udaaan Connect - Payment & Checkout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QRCode.js Library - Critical for QR Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>[citation:10]
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'payment-primary': '#059669', /* Emerald-600 for payments */
+                        'payment-secondary': '#9333ea', /* Violet-600 */
+                        'payment-light': '#f0fdf4', /* Light green background */
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --payment-primary: #059669;
+            --payment-primary-dark: #047857;
+            --payment-secondary: #9333ea;
+            --payment-light: #f0fdf4;
+            --dark: #1f2937;
+            --white: #ffffff;
+        }
+        
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; }
+        
+        /* Dark mode adjustments for payment page */
+        .dark-mode .payment-card {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: var(--white);
+        }
+        
+        .dark-mode .qr-container {
+            background-color: var(--white);
+            border-color: #d1d5db;
+        }
+        
+        .dark-mode .payment-success {
+            background: linear-gradient(135deg, #047857, #059669);
+        }
+        
+        .payment-success {
+            background: linear-gradient(135deg, #059669, #10b981);
+            animation: successPulse 2s infinite;
+        }
+        
+        @keyframes successPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; }
+        }
+        
+        .payment-qr-loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .payment-qr-loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--payment-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Active Payment Step */
+        .payment-step.active {
+            background-color: rgba(5, 150, 105, 0.1);
+            border-color: var(--payment-primary);
+            color: var(--payment-primary);
+        }
+        
+        .dark-mode .payment-step.active {
+            background-color: rgba(5, 150, 105, 0.2);
+            color: #34d399;
+        }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+            .qr-container {
+                order: -1; /* Show QR code first on mobile */
+            }
+        }
+        
+        /* Print styles for payment receipt */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .payment-receipt {
+                box-shadow: none !important;
+                border: 1px solid #000 !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white transition-colors duration-300">
+    
+    <!-- Payment Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="flex items-center gap-2 group">
+                        <div class="w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-500 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-all duration-300">
+                            <i class="fas fa-hand-holding-heart text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+                            Udaaan Pay
+                        </span>
+                    </a>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">Secure Payment Gateway</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div id="current-time" class="text-sm text-gray-600 dark:text-gray-300"></div>
+                    <a href="index.html" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300 no-print">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Payment Content -->
+    <main class="min-h-screen py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Payment Progress Steps -->
+            <div class="mb-8 no-print">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                    <div class="payment-step active flex items-center space-x-3 px-6 py-3 rounded-lg border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                        <div>
+                            <div class="font-semibold text-green-700 dark:text-green-300">Product Details</div>
+                            <div class="text-sm text-green-600 dark:text-green-400">Review your order</div>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:block text-gray-400 mx-4">
+                        <i class="fas fa-arrow-right text-xl"></i>
+                    </div>
+                    
+                    <div class="payment-step flex items-center space-x-3 px-6 py-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                        <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-full flex items-center justify-center font-bold">2</div>
+                        <div>
+                            <div class="font-semibold text-gray-600 dark:text-gray-400">Payment Method</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-500">Choose how to pay</div>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:block text-gray-400 mx-4">
+                        <i class="fas fa-arrow-right text-xl"></i>
+                    </div>
+                    
+                    <div class="payment-step flex items-center space-x-3 px-6 py-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                        <div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-full flex items-center justify-center font-bold">3</div>
+                        <div>
+                            <div class="font-semibold text-gray-600 dark:text-gray-400">Confirmation</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-500">Complete payment</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Grid -->
+            <div class="grid md:grid-cols-2 gap-8 payment-grid">
+                <!-- Left Column: Product & Payment Details -->
+                <div class="space-y-6">
+                    <!-- Product Details Card -->
+                    <div class="payment-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white flex items-center justify-between">
+                            <span>Order Summary</span>
+                            <span class="text-sm font-normal text-gray-500">Order #<span id="order-id">UDN20251215-001</span></span>
+                        </h2>
+                        
+                        <!-- Product Item (Dynamically loaded) -->
+                        <div id="product-details" class="space-y-4">
+                            <!-- Product will be loaded here via JavaScript -->
+                        </div>
+                        
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-6">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600 dark:text-gray-400">Subtotal</span>
+                                <span class="font-semibold" id="subtotal">₹0.00</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600 dark:text-gray-400">Shipping</span>
+                                <span class="font-semibold" id="shipping">₹0.00</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600 dark:text-gray-400">GST (18%)</span>
+                                <span class="font-semibold" id="tax">₹0.00</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-bold pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <span>Total Amount</span>
+                                <span class="text-green-600 dark:text-green-400" id="total-amount">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method Selection -->
+                    <div class="payment-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Select Payment Method</h2>
+                        
+                        <div class="space-y-3">
+                            <label class="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <input type="radio" name="payment-method" value="upi" class="h-5 w-5 text-green-600" checked>
+                                <div class="ml-3">
+                                    <div class="font-semibold">UPI QR Code Payment</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">Scan QR with any UPI app</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <i class="fas fa-qrcode text-2xl text-green-600"></i>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <input type="radio" name="payment-method" value="card" class="h-5 w-5 text-green-600">
+                                <div class="ml-3">
+                                    <div class="font-semibold">Credit/Debit Card</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">Visa, MasterCard, RuPay</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <i class="fas fa-credit-card text-2xl text-blue-600"></i>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <input type="radio" name="payment-method" value="netbanking" class="h-5 w-5 text-green-600">
+                                <div class="ml-3">
+                                    <div class="font-semibold">Net Banking</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">All major Indian banks</div>
+                                </div>
+                                <div class="ml-auto">
+                                    <i class="fas fa-university text-2xl text-purple-600"></i>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <!-- UPI ID Input (shown when UPI is selected) -->
+                        <div id="upi-input-section" class="mt-6 space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Enter UPI ID (Optional)</label>
+                                <input type="text" id="upi-id" placeholder="yourname@upi" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">If provided, payment link will be sent to this UPI ID</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Information -->
+                    <div class="payment-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Your Information</h2>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                                <input type="text" id="customer-name" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mobile Number</label>
+                                <input type="tel" id="customer-phone" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                                <input type="email" id="customer-email" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: QR Code & Payment Actions -->
+                <div class="space-y-6">
+                    <!-- QR Code Container -->
+                    <div class="payment-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white flex items-center justify-between">
+                            <span>Scan & Pay</span>
+                            <button id="refresh-qr" class="text-sm text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 flex items-center">
+                                <i class="fas fa-redo-alt mr-1"></i> Refresh QR
+                            </button>
+                        </h2>
+                        
+                        <div class="text-center mb-6">
+                            <div class="inline-block p-1 bg-gradient-to-r from-green-400 to-emerald-500 rounded-lg">
+                                <div class="qr-container bg-white p-4 rounded-lg inline-block">
+                                    <!-- QR Code will be generated here -->
+                                    <div id="qrcode" class="mx-auto"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Loading State -->
+                            <div id="qr-loading" class="payment-qr-loading">
+                                <div class="spinner"></div>
+                                <p class="text-gray-600 dark:text-gray-400">Generating payment QR code...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center space-y-3">
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                <i class="fas fa-mobile-alt mr-2"></i>
+                                Scan this QR code with any UPI app
+                            </p>
+                            <div class="flex items-center justify-center space-x-4">
+                                <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                                    <i class="fab fa-google-pay text-blue-600 dark:text-blue-400 text-xl"></i>
+                                </div>
+                                <div class="w-10 h-10 bg-green-50 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                                    <i class="fab fa-whatsapp text-green-600 dark:text-green-400 text-xl"></i>
+                                </div>
+                                <div class="w-10 h-10 bg-purple-50 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-phone-alt text-purple-600 dark:text-purple-400 text-xl"></i>
+                                </div>
+                                <div class="w-10 h-10 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/PhonePe_Logo.svg" alt="PhonePe" class="h-6">
+                                </div>
+                            </div>
+                            
+                            <!-- UPI ID Display -->
+                            <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">You can also send payment to:</p>
+                                <div class="flex items-center justify-center space-x-2">
+                                    <code class="bg-white dark:bg-gray-800 px-3 py-1 rounded border border-gray-200 dark:border-gray-600 font-mono text-sm" id="display-upi-id">udaan.connect@icici</code>
+                                    <button onclick="copyUPI()" class="text-green-600 hover:text-green-700 dark:text-green-400" title="Copy UPI ID">
+                                        <i class="far fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Instructions -->
+                    <div class="payment-card bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6">
+                        <h3 class="font-bold text-green-800 dark:text-green-300 mb-3 flex items-center">
+                            <i class="fas fa-info-circle mr-2"></i> Payment Instructions
+                        </h3>
+                        <ul class="space-y-2 text-sm text-green-700 dark:text-green-400">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-0.5 mr-2"></i>
+                                <span>Scan QR code with any UPI app on your phone</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-0.5 mr-2"></i>
+                                <span>Enter the exact amount shown above</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-0.5 mr-2"></i>
+                                <span>Add your order ID in payment remarks</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-0.5 mr-2"></i>
+                                <span>Payment confirmation may take 1-2 minutes</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Payment Actions -->
+                    <div class="space-y-4 no-print">
+                        <button onclick="processPayment()" id="pay-now-btn" class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:from-green-700 hover:to-emerald-700 transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center">
+                            <i class="fas fa-lock mr-2"></i>
+                            Pay Now <span id="pay-amount">₹0.00</span>
+                        </button>
+                        
+                        <button onclick="printReceipt()" class="w-full py-3 border-2 border-green-600 text-green-600 dark:text-green-400 font-semibold rounded-xl hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-300 flex items-center justify-center">
+                            <i class="fas fa-print mr-2"></i>
+                            Print Payment Details
+                        </button>
+                        
+                        <div class="text-center">
+                            <a href="#" class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400">
+                                <i class="fas fa-question-circle mr-1"></i>
+                                Need help with payment?
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Security Badges -->
+                    <div class="text-center space-y-4">
+                        <div class="flex items-center justify-center space-x-6">
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-shield-alt text-green-600 dark:text-green-400 text-xl"></i>
+                                </div>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">100% Secure</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-lock text-green-600 dark:text-green-400 text-xl"></i>
+                                </div>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">SSL Encrypted</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-user-shield text-green-600 dark:text-green-400 text-xl"></i>
+                                </div>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">PCI Compliant</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-500">
+                            Your payment information is securely processed and encrypted. We never store your card details.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Payment Receipt Modal -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 dark:text-white">Payment Receipt</h2>
+                    <button onclick="closeReceipt()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                
+                <div id="receipt-content" class="space-y-6 text-gray-700 dark:text-gray-300">
+                    <!-- Receipt content will be generated here -->
+                </div>
+                
+                <div class="mt-8 flex justify-center space-x-4">
+                    <button onclick="printReceipt()" class="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                        <i class="fas fa-print mr-2"></i>Print Receipt
+                    </button>
+                    <button onclick="downloadReceipt()" class="px-6 py-3 border border-green-600 text-green-600 dark:text-green-400 rounded-lg font-semibold hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors">
+                        <i class="fas fa-download mr-2"></i>Download PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full">
+            <div class="p-8 text-center">
+                <div class="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-check text-green-600 dark:text-green-400 text-3xl"></i>
+                </div>
+                
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Payment Successful!</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">
+                    Thank you for your payment. Your order is being processed.
+                </p>
+                
+                <div class="space-y-4">
+                    <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                        <div class="text-sm text-green-800 dark:text-green-300">Transaction ID</div>
+                        <div class="font-mono font-bold" id="transaction-id">TXN20251215ABCD1234</div>
+                    </div>
+                    
+                    <div class="flex justify-center space-x-4">
+                        <button onclick="viewReceipt()" class="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                            View Receipt
+                        </button>
+                        <button onclick="closeSuccess()" class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            Continue Shopping
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Implementation -->
+    <script>
+        // Global variables
+        let currentProduct = null;
+        let qrCodeInstance = null;
+        let paymentAmount = 0;
+        const UPI_ID = "udaan.connect@icici"; // Static UPI ID for demo
+        
+        // Sample products data (in real app, this would come from your main page)
+        const sampleProducts = {
+            'textiles': {
+                name: "Phulkari Dupatta - Heritage Collection",
+                price: 2500,
+                description: "Handwoven Phulkari dupatta with traditional embroidery from Punjab",
+                category: "Heritage Textiles",
+                image: "fas fa-tshirt",
+                color: "pink"
+            },
+            'organics': {
+                name: "Organic Mango Pickle (1kg Jar)",
+                price: 350,
+                description: "Traditional recipe preserved with organic spices",
+                category: "Organic Preserves",
+                image: "fas fa-jar",
+                color: "orange"
+            },
+            'bamboo': {
+                name: "Sustainable Bamboo Toothbrush Set",
+                price: 160,
+                description: "Pack of 4 eco-friendly bamboo toothbrushes",
+                category: "Eco-friendly Bamboo",
+                image: "fas fa-tooth",
+                color: "green"
+            },
+            'terracotta': {
+                name: "Handcrafted Terracotta Vase",
+                price: 800,
+                description: "Traditional West Bengal terracotta art piece",
+                category: "Terracotta Art",
+                image: "fas fa-wine-bottle",
+                color: "amber"
+            }
+        };
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get product from URL or default
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product') || 'textiles';
+            const quantity = parseInt(urlParams.get('quantity')) || 1;
+            
+            loadProduct(productId, quantity);
+            updateCurrentTime();
+            generateQRCode();
+            
+            // Update time every minute
+            setInterval(updateCurrentTime, 60000);
+            
+            // Event listeners
+            document.getElementById('refresh-qr').addEventListener('click', generateQRCode);
+            document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+                radio.addEventListener('change', handlePaymentMethodChange);
+            });
+            
+            // Load customer info if exists in localStorage
+            loadCustomerInfo();
+        });
+        
+        function loadProduct(productId, quantity) {
+            const product = sampleProducts[productId] || sampleProducts.textiles;
+            currentProduct = { ...product, quantity: quantity };
+            
+            // Update product display
+            const productContainer = document.getElementById('product-details');
+            const colorClass = `text-${product.color}-600 dark:text-${product.color}-400`;
+            
+            productContainer.innerHTML = `
+                <div class="flex items-start space-x-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div class="w-16 h-16 bg-${product.color}-100 dark:bg-${product.color}-900/30 rounded-lg flex items-center justify-center">
+                        <i class="${product.image} text-2xl ${colorClass}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-gray-800 dark:text-white">${product.name}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${product.description}</p>
+                        <div class="flex items-center justify-between mt-3">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="updateQuantity(-1)" class="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        <i class="fas fa-minus text-sm"></i>
+                                    </button>
+                                    <span class="font-semibold" id="quantity-display">${quantity}</span>
+                                    <button onclick="updateQuantity(1)" class="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        <i class="fas fa-plus text-sm"></i>
+                                    </button>
+                                </div>
+                                <span class="text-sm text-gray-500">Quantity</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold ${colorClass}" id="product-price">₹${(product.price * quantity).toLocaleString()}</div>
+                                <div class="text-sm text-gray-500">₹${product.price.toLocaleString()} each</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Calculate totals
+            calculateTotals();
+        }
+        
+        function updateQuantity(change) {
+            const newQuantity = currentProduct.quantity + change;
+            if (newQuantity < 1) return;
+            
+            currentProduct.quantity = newQuantity;
+            document.getElementById('quantity-display').textContent = newQuantity;
+            document.getElementById('product-price').textContent = `₹${(currentProduct.price * newQuantity).toLocaleString()}`;
+            
+            calculateTotals();
+            generateQRCode(); // Update QR code with new amount
+        }
+        
+        function calculateTotals() {
+            const subtotal = currentProduct.price * currentProduct.quantity;
+            const shipping = subtotal > 2000 ? 0 : 50;
+            const tax = subtotal * 0.18;
+            const total = subtotal + shipping + tax;
+            paymentAmount = total;
+            
+            document.getElementById('subtotal').textContent = `₹${subtotal.toLocaleString()}`;
+            document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : `₹${shipping}`;
+            document.getElementById('tax').textContent = `₹${tax.toFixed(2)}`;
+            document.getElementById('total-amount').textContent = `₹${total.toLocaleString()}`;
+            document.getElementById('pay-amount').textContent = `₹${total.toLocaleString()}`;
+        }
+        
+        function generateQRCode() {
+            // Show loading state
+            document.getElementById('qr-loading').classList.add('active');
+            
+            // Clear existing QR code
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            
+            // Generate UPI payment string
+            const upiPaymentString = `upi://pay?pa=${UPI_ID}&am=${paymentAmount}&tn=Udaaan%20Order%20${document.getElementById('order-id').textContent}&cu=INR`;
+            
+            // Generate QR code using QRCode.js[citation:10]
+            setTimeout(() => {
+                if (qrCodeInstance) {
+                    qrCodeInstance.clear();
+                }
+                
+                qrCodeInstance = new QRCode(qrContainer, {
+                    text: upiPaymentString,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H[citation:1][citation:10]
+                });
+                
+                // Update UPI ID display
+                document.getElementById('display-upi-id').textContent = UPI_ID;
+                
+                // Hide loading
+                document.getElementById('qr-loading').classList.remove('active');
+            }, 500);
+        }
+        
+        function handlePaymentMethodChange(event) {
+            const method = event.target.value;
+            const upiSection = document.getElementById('upi-input-section');
+            
+            if (method === 'upi') {
+                upiSection.style.display = 'block';
+                generateQRCode();
+            } else {
+                upiSection.style.display = 'none';
+                // For other methods, you would show different UI
+            }
+        }
+        
+        function processPayment() {
+            // Validate form
+            const name = document.getElementById('customer-name').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            const email = document.getElementById('customer-email').value.trim();
+            
+            if (!name || !phone || !email) {
+                alert('Please fill in all your information before proceeding.');
+                return;
+            }
+            
+            if (phone.length !== 10 || isNaN(phone)) {
+                alert('Please enter a valid 10-digit mobile number.');
+                return;
+            }
+            
+            // Save customer info
+            saveCustomerInfo();
+            
+            // Simulate payment processing
+            document.getElementById('pay-now-btn').innerHTML = `
+                <i class="fas fa-spinner fa-spin mr-2"></i>
+                Processing Payment...
+            `;
+            document.getElementById('pay-now-btn').disabled = true;
+            
+            setTimeout(() => {
+                // Generate random transaction ID
+                const txId = 'TXN' + Date.now().toString().slice(-10) + Math.random().toString(36).substr(2, 6).toUpperCase();
+                document.getElementById('transaction-id').textContent = txId;
+                
+                // Show success modal
+                document.getElementById('success-modal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                
+                // Update order status in localStorage
+                const order = {
+                    id: document.getElementById('order-id').textContent,
+                    date: new Date().toISOString(),
+                    product: currentProduct,
+                    customer: { name, phone, email },
+                    amount: paymentAmount,
+                    transactionId: txId,
+                    status: 'completed'
+                };
+                
+                localStorage.setItem('lastOrder', JSON.stringify(order));
+                
+                // Reset button
+                setTimeout(() => {
+                    document.getElementById('pay-now-btn').innerHTML = `
+                        <i class="fas fa-lock mr-2"></i>
+                        Pay Now ₹${paymentAmount.toLocaleString()}
+                    `;
+                    document.getElementById('pay-now-btn').disabled = false;
+                }, 2000);
+            }, 2000);
+        }
+        
+        function copyUPI() {
+            navigator.clipboard.writeText(UPI_ID).then(() => {
+                const button = event.target.closest('button');
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                }, 2000);
+            });
+        }
+        
+        function updateCurrentTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('current-time').textContent = now.toLocaleDateString('en-IN', options);
+        }
+        
+        function saveCustomerInfo() {
+            const customerInfo = {
+                name: document.getElementById('customer-name').value,
+                phone: document.getElementById('customer-phone').value,
+                email: document.getElementById('customer-email').value
+            };
+            localStorage.setItem('customerInfo', JSON.stringify(customerInfo));
+        }
+        
+        function loadCustomerInfo() {
+            const saved = localStorage.getItem('customerInfo');
+            if (saved) {
+                try {
+                    const customer = JSON.parse(saved);
+                    document.getElementById('customer-name').value = customer.name || '';
+                    document.getElementById('customer-phone').value = customer.phone || '';
+                    document.getElementById('customer-email').value = customer.email || '';
+                } catch (e) {
+                    console.error('Error loading customer info:', e);
+                }
+            }
+        }
+        
+        function viewReceipt() {
+            closeSuccess();
+            generateReceiptContent();
+            document.getElementById('receipt-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function generateReceiptContent() {
+            const receiptContent = document.getElementById('receipt-content');
+            const orderId = document.getElementById('order-id').textContent;
+            const txId = document.getElementById('transaction-id').textContent;
+            
+            receiptContent.innerHTML = `
+                <div class="payment-receipt">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-check text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">Payment Confirmed</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Thank you for your purchase!</p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Order ID</div>
+                                <div class="font-bold">${orderId}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Date</div>
+                                <div class="font-bold">${new Date().toLocaleDateString('en-IN')}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Transaction ID</div>
+                                <div class="font-mono font-bold text-sm">${txId}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Payment Method</div>
+                                <div class="font-bold">UPI QR Code</div>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                            <h4 class="font-bold text-lg mb-4">Order Details</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    <div>
+                                        <div class="font-semibold">${currentProduct.name}</div>
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">Qty: ${currentProduct.quantity}</div>
+                                    </div>
+                                    <div class="font-bold">₹${(currentProduct.price * currentProduct.quantity).toLocaleString()}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span>Subtotal</span>
+                                    <span>₹${(currentProduct.price * currentProduct.quantity).toLocaleString()}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Shipping</span>
+                                    <span>${paymentAmount - (currentProduct.price * currentProduct.quantity) - (currentProduct.price * currentProduct.quantity * 0.18) === 0 ? 'FREE' : '₹50'}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>GST (18%)</span>
+                                    <span>₹${(currentProduct.price * currentProduct.quantity * 0.18).toFixed(2)}</span>
+                                </div>
+                                <div class="flex justify-between text-lg font-bold pt-2 border-t border-gray-200 dark:border-gray-700">
+                                    <span>Total Paid</span>
+                                    <span class="text-green-600 dark:text-green-400">₹${paymentAmount.toLocaleString()}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                            <h4 class="font-bold text-lg mb-4">Customer Information</h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Name</div>
+                                    <div>${document.getElementById('customer-name').value}</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Phone</div>
+                                    <div>${document.getElementById('customer-phone').value}</div>
+                                </div>
+                                <div class="col-span-2">
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Email</div>
+                                    <div>${document.getElementById('customer-email').value}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <div class="flex items-start">
+                                <i class="fas fa-info-circle text-green-600 dark:text-green-400 mt-0.5 mr-3"></i>
+                                <div>
+                                    <div class="font-semibold text-green-800 dark:text-green-300 mb-1">Order Status</div>
+                                    <div class="text-sm text-green-700 dark:text-green-400">
+                                        Your order is confirmed and will be processed within 24 hours.
+                                        You will receive shipping updates via email and SMS.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function printReceipt() {
+            window.print();
+        }
+        
+        function downloadReceipt() {
+            alert('In a production environment, this would generate and download a PDF receipt.');
+            // Implementation for PDF generation would go here
+        }
+        
+        function closeReceipt() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        function closeSuccess() {
+            document.getElementById('success-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        // Dark mode support (compatible with your main site)
+        function checkDarkMode() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+        
+        // Initialize dark mode check
+        checkDarkMode();
+    </script>
+</body>
+</html>
