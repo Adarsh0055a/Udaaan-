@@ -1,0 +1,124 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "category": "Traditional & Specialty Food Products",
+      "name": "Traditional Mango Pickle",
+      "description": "Authentic homemade pickle with traditional spices, no artificial preservatives.",
+      "price": 180,
+      "image": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=300&fit=crop",
+      "stock": 45,
+      "rating": 4.7,
+      "unit": "500g jar",
+      "tags": ["pickle", "homemade", "traditional"]
+    },
+    {
+      "id": 2,
+      "category": "Traditional & Specialty Food Products",
+      "name": "Forest Raw Honey",
+      "description": "Pure, unprocessed forest honey collected from wild beehives.",
+      "price": 450,
+      "image": "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=400&h=300&fit=crop",
+      "stock": 28,
+      "rating": 4.9,
+      "unit": "500g bottle",
+      "tags": ["honey", "raw", "forest", "unprocessed"]
+    },
+    {
+      "id": 3,
+      "category": "Traditional & Specialty Food Products",
+      "name": "Cold-Pressed Coconut Oil",
+      "description": "Traditional wood-pressed coconut oil, retains natural nutrients.",
+      "price": 350,
+      "image": "https://images.unsplash.com/photo-1533050487297-09b450131914?w=400&h=300&fit=crop",
+      "stock": 32,
+      "rating": 4.6,
+      "unit": "500ml bottle",
+      "tags": ["oil", "cold-pressed", "coconut"]
+    },
+    {
+      "id": 4,
+      "category": "Handicrafts & Artisan Products",
+      "name": "Hand-painted Wall Decor",
+      "description": "Traditional folk art on canvas, perfect for home decoration.",
+      "price": 1200,
+      "image": "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?w=400&h=300&fit=crop",
+      "stock": 15,
+      "rating": 4.8,
+      "unit": "12x16 inch",
+      "tags": ["wall decor", "hand-painted", "artisan"]
+    },
+    {
+      "id": 5,
+      "category": "Handicrafts & Artisan Products",
+      "name": "Terracotta Diya Set",
+      "description": "Handcrafted clay diyas for festive occasions and home decor.",
+      "price": 280,
+      "image": "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?w=400&h=300&fit=crop",
+      "stock": 60,
+      "rating": 4.5,
+      "unit": "Set of 6",
+      "tags": ["terracotta", "diya", "handmade"]
+    },
+    {
+      "id": 6,
+      "category": "Textiles & Fashion Accessories",
+      "name": "Handwoven Silk Shawl",
+      "description": "Traditional handloom silk shawl with intricate border design.",
+      "price": 2200,
+      "image": "https://images.unsplash.com/photo-1590334284665-f6ebe5ba3b14?w=400&h=300&fit=crop",
+      "stock": 18,
+      "rating": 4.9,
+      "unit": "One piece",
+      "tags": ["shawl", "handwoven", "silk"]
+    },
+    {
+      "id": 7,
+      "category": "Textiles & Fashion Accessories",
+      "name": "Block Printed Cushion Cover",
+      "description": "Traditional block printing on pure cotton fabric.",
+      "price": 450,
+      "image": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "stock": 35,
+      "rating": 4.7,
+      "unit": "One piece",
+      "tags": ["cushion", "block print", "cotton"]
+    },
+    {
+      "id": 8,
+      "category": "Natural, Herbal & Wellness Products",
+      "name": "Neem-Turmeric Herbal Soap",
+      "description": "Natural soap with antibacterial neem and healing turmeric.",
+      "price": 120,
+      "image": "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&h=300&fit=crop",
+      "stock": 75,
+      "rating": 4.6,
+      "unit": "100g bar",
+      "tags": ["soap", "herbal", "neem", "turmeric"]
+    },
+    {
+      "id": 9,
+      "category": "Natural, Herbal & Wellness Products",
+      "name": "Herbal Hair Oil",
+      "description": "Traditional Ayurvedic hair oil with bhringraj and amla.",
+      "price": 320,
+      "image": "https://images.unsplash.com/photo-1629198720835-2806a8fd5e32?w=400&h=300&fit=crop",
+      "stock": 40,
+      "rating": 4.8,
+      "unit": "200ml bottle",
+      "tags": ["hair oil", "ayurvedic", "herbal"]
+    },
+    {
+      "id": 10,
+      "category": "Traditional & Specialty Food Products",
+      "name": "Homemade Strawberry Jam",
+      "description": "Fresh strawberry jam with natural sweetness, no added preservatives.",
+      "price": 220,
+      "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop",
+      "stock": 25,
+      "rating": 4.7,
+      "unit": "250g jar",
+      "tags": ["jam", "homemade", "preservative-free"]
+    }
+  ]
+}
