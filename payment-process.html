@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Payment - Traditional & Artisan Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Razorpay Checkout Integration -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f5f0;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .payment-container {
+            max-width: 600px;
+            width: 90%;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .payment-header {
+            background: linear-gradient(135deg, #2c5530 0%, #5a8c5a 100%);
+            color: white;
+            padding: 30px 20px;
+        }
+        
+        .payment-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .payment-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .payment-content {
+            padding: 40px 30px;
+        }
+        
+        .order-summary {
+            background-color: #f9fdf9;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .order-summary h3 {
+            color: #2c5530;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        
+        .summary-total {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #2c5530;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #c8e6c9;
+        }
+        
+        .processing-animation {
+            margin: 30px 0;
+        }
+        
+        .processing-spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #4caf50;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .processing-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c5530;
+            margin-bottom: 10px;
+        }
+        
+        .processing-subtext {
+            color: #666;
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .razorpay-info {
+            background-color: #528ff0;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .payment-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-cancel {
+            flex: 1;
+            background-color: #f5f5f5;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .btn-pay {
+            flex: 2;
+            background: linear-gradient(135deg, #4caf50 0%, #2c5530 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-pay:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(44, 85, 48, 0.2);
+        }
+        
+        .btn-pay:active {
+            transform: translateY(-1px);
+        }
+        
+        .secure-payment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+            color: #4caf50;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .success-message {
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .payment-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .payment-content {
+                padding: 30px 20px;
+            }
+            
+            .payment-actions {
+                flex-direction: column;
+            }
+            
+            .btn-cancel, .btn-pay {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1><i class="fas fa-lock"></i> Secure Payment</h1>
+            <p>Complete your payment with Razorpay</p>
+        </div>
+        
+        <div class="payment-content">
+            <div class="order-summary">
+                <h3><i class="fas fa-receipt"></i> Payment Summary</h3>
+                <div class="summary-line">
+                    <span>Order Total:</span>
+                    <span>₹<span id="order-total">0</span></span>
+                </div>
+                <div class="summary-line">
+                    <span>Payment Gateway:</span>
+                    <span>Razorpay</span>
+                </div>
+                <div class="summary-line summary-total">
+                    <span>Amount to Pay:</span>
+                    <span>₹<span id="payment-amount">0</span></span>
+                </div>
+            </div>
+            
+            <div class="razorpay-info">
+                <i class="fas fa-shield-alt"></i>
+                <span>Powered by Razorpay - India's Most Trusted Payment Gateway</span>
+            </div>
+            
+            <div class="processing-animation">
+                <div class="processing-spinner"></div>
+                <div class="processing-text">Ready for Payment</div>
+                <div class="processing-subtext">
+                    Click "Proceed to Payment" to complete your order securely
+                </div>
+            </div>
+            
+            <div class="payment-actions">
+                <button class="btn-cancel" id="cancel-button">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn-pay" id="pay-button">
+                    <i class="fas fa-lock"></i> Proceed to Payment
+                </button>
+            </div>
+            
+            <div class="success-message" id="success-message">
+                <i class="fas fa-check-circle"></i>
+                <span id="success-text">Payment successful! Redirecting...</span>
+            </div>
+            
+            <div class="secure-payment">
+                <i class="fas fa-lock"></i>
+                <span>Your payment details are encrypted and secure</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Razorpay Configuration
+        const RAZORPAY_KEY_ID = 'rzp_test_RsKSAsI6TrkseA';
+        let orderData = {};
+        let checkoutData = {};
+        
+        // Load order data
+        function loadOrderData() {
+            try {
+                // Get order data from localStorage
+                const lastOrderStr = localStorage.getItem('lastOrder');
+                const checkoutDataStr = localStorage.getItem('checkoutData');
+                
+                if (lastOrderStr && checkoutDataStr) {
+                    orderData = JSON.parse(lastOrderStr);
+                    checkoutData = JSON.parse(checkoutDataStr);
+                    
+                    // Display order total
+                    document.getElementById('order-total').textContent = orderData.total;
+                    document.getElementById('payment-amount').textContent = orderData.total;
+                } else {
+                    // No data found, redirect to address page
+                    window.location.href = 'payment-address.html';
+                }
+            } catch (error) {
+                console.error('Error loading order data:', error);
+                window.location.href = 'payment-address.html';
+            }
+        }
+        
+        // Show success message
+        function showSuccess(message) {
+            const successMessage = document.getElementById('success-message');
+            const successText = document.getElementById('success-text');
+            
+            successText.textContent = message;
+            successMessage.classList.add('show');
+        }
+        
+        // Start Razorpay Payment
+        function startRazorpayPayment() {
+            const options = {
+                "key": RAZORPAY_KEY_ID,
+                "amount": orderData.total * 100, // Amount in paise (₹1 = 100 paise)
+                "currency": "INR",
+                "name": "Traditional & Artisan Marketplace",
+                "description": "Order #" + orderData.orderId,
+                "image": "https://cdn.razorpay.com/logos/BUVwv4hOcLvtzL_large.png",
+                "order_id": "", // This will be generated by your backend
+                "handler": function (response) {
+                    // This function will be called after successful payment
+                    handlePaymentSuccess(response);
+                },
+                "prefill": {
+                    "name": orderData.address.fullName,
+                    "email": orderData.address.email || "customer@example.com",
+                    "contact": orderData.address.mobileNumber
+                },
+                "notes": {
+                    "order_id": orderData.orderId,
+                    "address": orderData.address.addressLine1
+                },
+                "theme": {
+                    "color": "#2c5530"
+                },
+                "modal": {
+                    "ondismiss": function() {
+                        // Handle modal dismissal
+                        console.log("Payment modal dismissed");
+                        alert("Payment was cancelled. You can try again or choose a different payment method.");
+                    }
+                }
+            };
+            
+            // Since we don't have a backend, we'll use a test implementation
+            const razorpayInstance = new Razorpay(options);
+            
+            // Generate a mock order ID for demo
+            const mockOrderId = 'order_' + Math.random().toString(36).substr(2, 9);
+            options.order_id = mockOrderId;
+            
+            razorpayInstance.open();
+            
+            // Log payment start for demo
+            console.log("Razorpay payment initiated for amount:", orderData.total);
+        }
+        
+        // Handle successful payment
+        function handlePaymentSuccess(response) {
+            // Show success message
+            showSuccess("Payment Successful! Processing your order...");
+            
+            // Update order data with payment details
+            orderData.razorpayPaymentId = response.razorpay_payment_id;
+            orderData.razorpayOrderId = response.razorpay_order_id;
+            orderData.razorpaySignature = response.razorpay_signature;
+            orderData.paymentStatus = 'success';
+            orderData.paymentDate = new Date().toISOString();
+            
+            // Save updated order data
+            localStorage.setItem('lastOrder', JSON.stringify(orderData));
+            
+            // Clear cart data
+            localStorage.removeItem('cartItems');
+            localStorage.removeItem('cartTotal');
+            localStorage.removeItem('checkoutData');
+            
+            // Redirect to thank you page after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'thankyou.html';
+            }, 2000);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Pay button
+            document.getElementById('pay-button').addEventListener('click', startRazorpayPayment);
+            
+            // Cancel button
+            document.getElementById('cancel-button').addEventListener('click', () => {
+                if (confirm('Are you sure you want to cancel this payment? You will be returned to the address page.')) {
+                    window.location.href = 'payment-address.html';
+                }
+            });
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrderData();
+            setupEventListeners();
+        });
+    </script>
+</body>
+</html>
