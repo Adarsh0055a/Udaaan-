@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Udaaan Connect – Login</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Supabase -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <!-- Icons + Font -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg,#e8f5e9,#c8e6c9,#a5d6a7);
+    }
+    .card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    .input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+    }
+    .btn {
+      background: linear-gradient(135deg,#1e40af,#3b82f6);
+      color: white;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      width: 100%;
+      transition: opacity .3s;
+    }
+    .btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen p-4">
+
+  <div class="card w-full max-w-md p-8">
+    <div class="text-center mb-6">
+      <i class="fas fa-rocket text-blue-600 text-4xl"></i>
+      <h1 class="text-3xl font-bold mt-2">Udaaan Connect</h1>
+      <p class="text-gray-500">Learn to Lead, Connect to Conquer</p>
+    </div>
+
+    <h2 id="formTitle" class="text-xl font-semibold text-center mb-4">
+      Welcome Back
+    </h2>
+
+    <!-- MESSAGE BOX -->
+    <div id="messageBox" class="hidden mb-4 text-sm p-3 rounded-lg"></div>
+
+    <form id="authForm" class="space-y-4">
+      <input id="fullName" class="input hidden" placeholder="Full Name"/>
+
+      <input id="email" type="email" class="input" placeholder="Email" required/>
+
+      <input id="password" type="password" class="input" placeholder="Password" required/>
+
+      <button id="submitBtn" class="btn" type="submit">
+        <span id="submitText">Sign In</span>
+      </button>
+    </form>
+
+    <p class="text-center text-sm mt-4">
+      <span id="toggleText">Don't have an account?</span>
+      <button id="toggleBtn" class="text-blue-600 font-semibold ml-1">
+        Create Account
+      </button>
+    </p>
+  </div>
+
+<script>
+/* ================= SUPABASE CONFIG ================= */
+const SUPABASE_URL = "https://fbpyqgopdhzfhxajvmql.supabase.co";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZicHlxZ29wZGh6Zmh4YWp2bXFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4ODA0NjIsImV4cCI6MjA4MTQ1NjQ2Mn0.pUGcbQGR3ori9-EsLKunGIknWTGozULh0WNRPUj3dbE";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+/* ================= ELEMENTS ================= */
+const form = document.getElementById("authForm");
+const toggleBtn = document.getElementById("toggleBtn");
+const toggleText = document.getElementById("toggleText");
+const submitText = document.getElementById("submitText");
+const submitBtn = document.getElementById("submitBtn");
+const formTitle = document.getElementById("formTitle");
+const fullNameInput = document.getElementById("fullName");
+const messageBox = document.getElementById("messageBox");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+
+let isLogin = true;
+
+/* ================= HELPERS ================= */
+function showMessage(text, type = "error") {
+  messageBox.classList.remove("hidden");
+  messageBox.className =
+    "mb-4 text-sm p-3 rounded-lg " +
+    (type === "error"
+      ? "bg-red-100 text-red-700"
+      : "bg-green-100 text-green-700");
+  messageBox.innerText = text;
+}
+
+function setLoading(state) {
+  submitBtn.disabled = state;
+  submitText.innerText = state
+    ? "Please wait..."
+    : isLogin ? "Sign In" : "Sign Up";
+}
+
+/* ================= TOGGLE ================= */
+toggleBtn.onclick = () => {
+  isLogin = !isLogin;
+  fullNameInput.classList.toggle("hidden", isLogin);
+  submitText.innerText = isLogin ? "Sign In" : "Sign Up";
+  formTitle.innerText = isLogin ? "Welcome Back" : "Create Account";
+  toggleText.innerText = isLogin
+    ? "Don't have an account?"
+    : "Already have an account?";
+  toggleBtn.innerText = isLogin ? "Create Account" : "Sign In";
+  messageBox.classList.add("hidden");
+};
+
+/* ================= AUTH ================= */
+form.onsubmit = async (e) => {
+  e.preventDefault();
+  messageBox.classList.add("hidden");
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  const fullName = fullNameInput.value.trim();
+
+  if (!email || !password) {
+    showMessage("Email and password are required");
+    return;
+  }
+
+  if (!isLogin && !fullName) {
+    showMessage("Full name is required for signup");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    if (isLogin) {
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email, password
+      });
+      if (error) throw error;
+
+      showMessage("Login successful! Redirecting...", "success");
+
+    } else {
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName }
+        }
+      });
+      if (error) throw error;
+
+      if (data.user) {
+        await supabaseClient.from("users").insert({
+          id: data.user.id,
+          email,
+          full_name: fullName,
+          user_type: "micropreneur"
+        });
+      }
+
+      showMessage("Account created successfully!", "success");
+    }
+
+    localStorage.setItem("user_email", email);
+    localStorage.setItem("user_name", fullName || email.split("@")[0]);
+
+    setTimeout(() => {
+      window.location.href = "home.html";
+    }, 1200);
+
+  } catch (err) {
+    showMessage(err.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+</script>
+
+</body>
+</html>
